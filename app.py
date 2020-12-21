@@ -36,7 +36,8 @@ def signup():
             return "Must proivde password" #dis one
         if password != re_password:
             return "Passwords Don't match!" #dis one
-        if not userType or userType != "student" or userType != "teacher":
+        print(userType)
+        if not userType or (userType != "student" and userType != "teacher"):
             return "User Type Invalid"
         
         name = name.lower()
@@ -75,6 +76,7 @@ def login():
 
         #setting the session's user id
         session["user_id"] = rows[0]["id"]
+        session["type"] = rows[0]["type"]
 
         #redirecting on the basis of user is teacher or student
         if session["type"] == "student":
