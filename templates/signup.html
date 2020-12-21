@@ -1,24 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        h1, h2{
-            text-align: center;
-        }
-        
-        form{
-            margin: auto;
-            display: table;
-        }
-    </style>
-</head>
-<body>
-    <h1>Welcome to Klassroom</h1>
-    <h2>Sign up here</h2>
+{% extends "layout.html" %}
 
+{% block title %}
+    Sign Up
+{% endblock %}
+
+{% block body %}
     <form action="/signup" method="POST">
         <input type="text" name="username" placeholder="Username"><br>
         <input type="password" name="password" placeholder="Password"><br>
@@ -29,5 +15,4 @@
         <label for="student">student</label><br>
         <input type="submit">
     </form>
-</body>
-</html>
+{% endblock %}
