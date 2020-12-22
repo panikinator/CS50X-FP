@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import login_required
 from cs50 import SQL
 
-db = SQL("sqlite:///db.db") #connecting to the sqlite3 database
+db = SQL("sqlite:///database.db") #connecting to the sqlite3 database
 
 
 #configuring the flask app
@@ -27,7 +27,7 @@ def signup():
         name = request.form.get("username")
         password = request.form.get("password")
         re_password = request.form.get("re-password")
-        userType = request.form.get("type")
+        
 
         #checking for errors in form fields
         if not name:
@@ -36,15 +36,12 @@ def signup():
             return "Must proivde password" #dis one
         if password != re_password:
             return "Passwords Don't match!" #dis one
-        print(userType)
-        if not userType or (userType != "student" and userType != "teacher"):
-            return "User Type Invalid"
         
         name = name.lower()
         row = db.execute("SELECT * FROM users WHERE username = :username",username = name)
 
         if not row:
-            db.execute("INSERT INTO users(username, hash, type) VALUES(:username, :hashed, :userType)", username = name, hashed = generate_password_hash(password), userType = userType)
+            db.execute("INSERT INTO users(username, hash) VALUES(:username, :hashed)", username = name, hashed = generate_password_hash(password))
             return redirect("/")
         else:
             return "username already taken!" #dis one
@@ -76,13 +73,7 @@ def login():
 
         #setting the session's user id
         session["user_id"] = rows[0]["id"]
-        session["type"] = rows[0]["type"]
-
-        #redirecting on the basis of user is teacher or student
-        if session["type"] == "student":
-            return redirect("/teacher")
-        else:
-            return redirect("/student")
+        return redirect("/")
     
     #route if user requests the webpage via GET
     else:
@@ -93,20 +84,6 @@ def login():
 @login_required
 def index():
     return render_template("index.html")
-
-
-#TODO: complete the student route
-@app.route("/student")
-@login_required
-def student():
-    return "hello student"
-
-#TODO: complete the teacher route
-@app.route("/student")
-@login_required
-def teacher():
-    return "hello teacher"
-
 
 
 #clears the session to logout the user
