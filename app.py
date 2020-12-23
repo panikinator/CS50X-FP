@@ -86,29 +86,65 @@ def login():
 def index():
     return render_template("index.html")
 
-# route fo creatin new class
+# route fo creating a new class
 @app.route("/createClass", methods=["GET", "POST"])
 @login_required
 def createClass():
 
+    # if user submits the form via POST
     if request.method == "POST":
 
+        # get values from the form
         className = request.form.get("className")
         subject = request.form.get("subject")
 
+        # check for missing values
         if not className:
             return "Must provide classname"
 
         if not subject:
             return "Must provide subject"
 
+        # insert new row in classes table
         db.execute("INSERT INTO classes(class_name, subject_name, teacher_id, code) VALUES(:className, :subject, :user_id, :code)", className=className, subject=subject, user_id=session["user_id"], code=create_code(db))
 
         return redirect("/")
 
+    # if user requests the form via get
     if request.method == "GET":
-
         return render_template("class.html")
+
+
+# route for joining a class
+@app.route("/join", methods=["GET", "POST"])
+@login_required
+def join():
+
+    # if user submits the form via get
+    if request.method == "POST":
+
+        # get values from the form
+        classCode = request.form.get("classCode")
+
+        # check for empty values
+        if not classCode:
+            return "Must Provide Invite Code"
+
+        # check if user is already a member of the given class
+        alreadyMember = not(db.execute("SELECT * FROM students WHERE (class_id = :classCode AND student_id = :user_id)", classCode=classCode, user_id=session["user_id"]))
+
+        if not alreadyMember:
+            return "You are already a member of this class"
+
+        # add user to the class
+        db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :classCode)", user_id=session["user_id"], classCode=classCode)
+
+        # redirect user to the main page
+        return redirect("/")
+
+    # if user requests the form via get
+    if request.method == "GET":
+        return render_template("join.html")
 
 
 #clears the session to logout the user

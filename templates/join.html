@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Join Class
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Join Class</h1>
+        <br>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <form action="/join" method="POST">
+            <input type="text" name="classCode" placeholder="Invite Code"><br>
+            <input type="submit" placeholder="Join">
+        </form>
+    </div>
+</div>
+{% endblock %}
