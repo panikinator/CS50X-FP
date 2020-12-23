@@ -1,8 +1,8 @@
 from flask import redirect, render_template, request, session
 from functools import wraps
-from cs50 import SQL 
 import random
 import string
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
