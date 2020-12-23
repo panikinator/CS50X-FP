@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import login_required
 from cs50 import SQL
 
+from helpers import login_required, create_code, makeRandomString
+
 db = SQL("sqlite:///database.db") #connecting to the sqlite3 database
 
 
@@ -83,6 +85,30 @@ def login():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+# route fo creatin new class
+@app.route("/createClass", methods=["GET", "POST"])
+@login_required
+def createClass():
+
+    if request.method == "POST":
+
+        className = request.form.get("className")
+        subject = request.form.get("subject")
+
+        if not className:
+            return "Must provide classname"
+
+        if not subject:
+            return "Must provide subject"
+
+        db.execute("INSERT INTO classes(class_name, subject_name, teacher_id, code) VALUES(:className, :subject, :user_id, :code)", className=className, subject=subject, user_id=session["user_id"], code=create_code(db))
+
+        return redirect("/")
+
+    if request.method == "GET":
+
+        return render_template("class.html")
 
 
 #clears the session to logout the user
