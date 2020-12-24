@@ -5,20 +5,34 @@
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-sm-12">
-        <h1>Login Here</h1>
-        <br>
+<div class="wrapper">
+    <div class="header">
+        <img src="/static/Temp_Logo.png" alt="Studinger Logo">
     </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12 text-center">
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="username"><br>
-            <input type="password" name="password" placeholder="password"><br>
-            <input type="submit">
-        </form>
+    <div class="header non-fixed">
+    </div>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col">
+                <h3>Welcome Back!</h3>
+                <h5>Glad to see you again!</h5>
+                <form action="/login" method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label"><h6>USERNAME</h6></label>
+                        <input type="text" class="form-control" id="email" name="username">
+                    </div>
+                    <div class="mb-3">
+                      <label for="pwd" class="form-label"><h6>PASSWORD</h6></label>
+                      <input type="password" class="form-control" id="pwd" name="password">
+                    </div>
+                    <input type="submit" value="LOGIN" class="btn btn-primary submit">
+                </form>
+                    <div class="sign-up">
+                        New to Studinger?
+                        <a href="/signup">Sign up</a>
+                    </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

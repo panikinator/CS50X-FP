@@ -5,22 +5,37 @@
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-sm-12">
-        <h1>Welcome to Studinger</h1>
-        <h2>Sign Up here</h2>
-        <br>
+<div class="wrapper">
+    <div class="header">
+        <img src="/static/Temp_Logo.png" alt="Studinger Logo">
     </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12 text-center">
-        <form action="/signup" method="POST">
-            <input type="text" name="username" placeholder="Username"><br>
-            <input type="password" name="password" placeholder="Password"><br>
-            <input type="password" name="re-password" placeholder="Re-enter Password"><br>
-            <input type="submit">
-        </form>
+    <div class="header non-fixed">
+    </div>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col">
+                <h3>Create Account</h3>
+                <form action="/signup" method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label"><h6>USERNAME</h6></label>
+                        <input type="text" class="form-control" id="email" name="username">
+                    </div>
+                    <div class="mb-3">
+                      <label for="pwd" class="form-label"><h6>PASSWORD</h6></label>
+                      <input type="password" class="form-control" id="pwd" name="password">
+                    </div>
+                    <div class="mb-3">
+                      <label for="re-pwd" class="form-label"><h6>CONFIRM PASSWORD</h6></label>
+                      <input type="password" class="form-control" id="re-pwd" name="re-password">
+                    </div>
+                    <input type="submit" value="SIGN UP" class="btn btn-primary submit">
+                </form>
+                    <div class="sign-up">
+                        Already have an account?
+                        <a href="/login">Login</a>
+                    </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,9 +1,91 @@
-
-h1, h2 {
-    text-align: center;
+/* CSS Variables */
+:root {
+    --dark-text: #858688;
+    --dark-button: #436ee4;
+    --dark-button-hover: #0e2ee0;
+    --background: #3d3d41;
+    --page-background: #ffffff;
+    --shadow: 0 1px 5px rgba(104, 104, 104, 0.8);
 }
 
-form {
-    margin: auto;
-    display: table;
+body {
+    margin: 30px 50px;
+    line-height: 1.4;
+    background: var(--page-background);
+}
+
+img {
+    max-width: 200px;
+}
+
+.wrapper {
+    display: grid;
+    grid-gap: 20px;
+}
+
+.header {
+    height: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    position: fixed;
+    padding-right: 100px;
+}
+
+.non-fixed {
+    position: relative;
+}
+
+.col {
+    max-width: 550px;
+    align-content: center;
+    background: var(--background);
+    padding: 2em;
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+}
+.submit {
+    width: 100%;
+    background: var(--dark-button);
+}
+
+.submit:hover {
+    background: var(--dark-button-hover);
+}
+
+.form-label > h6 {
+    font-size: 0.8rem;
+    line-height: 0;
+    color: var(--dark-text);
+}
+
+.col > h3 {
+    text-align: center;
+    color: #ffffff;
+}
+
+.col > h5 {
+    text-align: center;
+    color: var(--dark-text);
+}
+
+.sign-up {
+    color: var(--dark-text);
+}
+
+a {
+    color: var(--dark-button);
+}
+
+a:hover {
+    text-decoration: none;
+    color: var(--dark-button-hover);
+}
+
+@media(max-width: 700px) {
+    .header {
+        align-items: center;
+    }
 }
