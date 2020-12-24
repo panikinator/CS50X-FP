@@ -130,14 +130,19 @@ def join():
         if not classCode:
             return "Must Provide Invite Code"
 
+        #checking if class exists or not
+        rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = classCode)
+        if len(rows_of_classes) < 1:
+            return "class does not exist" #dis one
+
         # check if user is already a member of the given class
-        alreadyMember = not(db.execute("SELECT * FROM students WHERE (class_id = :classCode AND student_id = :user_id)", classCode=classCode, user_id=session["user_id"]))
+        alreadyMember = not(db.execute("SELECT * FROM students WHERE (class_id = :class_id AND student_id = :user_id)", class_id = rows_of_classes[0]['class_id'], user_id=session["user_id"]))
 
         if not alreadyMember:
             return "You are already a member of this class"
-
+        
         # add user to the class
-        db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :classCode)", user_id=session["user_id"], classCode=classCode)
+        db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :class_id)", user_id=session["user_id"], class_id = rows_of_classes[0]['class_id'])
 
         # redirect user to the main page
         return redirect("/")
@@ -145,6 +150,20 @@ def join():
     # if user requests the form via get
     if request.method == "GET":
         return render_template("join.html")
+
+@app.route("/class/<class_code>")
+@login_required
+def classes(class_code):
+    rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)
+    if len(rows_of_classes) < 1:
+        return "class does not exist" #dis one
+    isNotInClass = not(db.execute("SELECT * FROM students WHERE (class_id = :class_id AND student_id = :user_id)", class_id = rows_of_classes[0]['class_id'], user_id=session["user_id"]))
+    if isNotInClass:
+        return "you are not in the class" #dis one
+    
+    students = db.execute("SELECT username FROM users JOIN students ON id = students.student_id WHERE class_id = :class_id",class_id = rows_of_classes[0]['class_id'])
+    print(students)
+    return render_template("viewclass.html", subjects = rows_of_classes[0]['subject_name'], users = students)
 
 
 #clears the session to logout the user

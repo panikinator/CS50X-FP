@@ -26,10 +26,3 @@ def create_code(database):
         if not len(rows) > 0:
             already_taken = False
     return code
-    
-
-# db = SQL("sqlite:///database.db")
-# someCode = "ABCDEFGH"
-
-# code = create_code(db)
-# print(code)
