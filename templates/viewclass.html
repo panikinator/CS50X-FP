@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Class {{subject}}
+{% endblock %}
+
+{% block body %}
+
+<ul>
+    {% for user in users %}
+        <li>{{user['username']}}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
