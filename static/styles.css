@@ -62,6 +62,10 @@ img {
     color: var(--dark-text);
 }
 
+.form-label.invalid > h6 {
+    color: var(--invalid);
+}
+
 .col > h3 {
     text-align: center;
     color: #ffffff;
@@ -85,13 +89,11 @@ a:hover {
     color: var(--dark-button-hover);
 }
 
-}
-
 .form-control.invalid {
     border-color: var(--invalid);
 }
 
-.form-control.invalid:hover {
+.form-control.invalid:focus {
     border-color: var(--invalid);
 }
 

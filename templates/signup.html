@@ -17,16 +17,60 @@
                 <h3>Create Account</h3>
                 <form action="/signup" method="POST">
                     <div class="mb-3">
-                        <label for="email" class="form-label"><h6>USERNAME</h6></label>
-                        <input type="text" class="form-control" id="email" name="username">
+
+                        {% if error == "username" %}
+
+                            <label for="email" class="form-label invalid"><h6>USERNAME <i>- This field is mandatory</i></h6></label>
+                            <input type="text" class="form-control invalid" id="email" name="username">
+
+                        {% elif error == "nameAlreadyTaken" %}
+
+                        <label for="email" class="form-label invalid"><h6>USERNAME <i>- Username already taken</i></h6></label>
+                        <input type="text" class="form-control invalid" id="email" value="{{ username }}" name="username">
+                        
+                        {% else %}
+
+                            <label for="email" class="form-label"><h6>USERNAME</h6></label>
+                            <input type="text" class="form-control" id="email" value="{{ username }}" name="username">
+
+                        {% endif %}
                     </div>
                     <div class="mb-3">
-                      <label for="pwd" class="form-label"><h6>PASSWORD</h6></label>
-                      <input type="password" class="form-control" id="pwd" name="password">
+                        {% if error == "password" %}
+
+                        <label for="pwd" class="form-label invalid"><h6>PASSWORD <i>- This field is mandatory</i></h6></label>
+                        <input type="password" class="form-control" id="pwd" name="password">
+
+                        {% elif error == "mismatch" %}
+
+                        <label for="pwd" class="form-label invalid"><h6>PASSWORD <i>- Passwords didn't match</i></h6></label>
+                        <input type="password" class="form-control" id="pwd" value="{{ password }}" name="password">
+
+                        {% else %}
+
+                            <label for="pwd" class="form-label"><h6>PASSWORD</h6></label>
+                            <input type="password" class="form-control" id="pwd" value="{{ password }}" name="password">
+
+                        {% endif %}
                     </div>
                     <div class="mb-3">
-                      <label for="re-pwd" class="form-label"><h6>CONFIRM PASSWORD</h6></label>
-                      <input type="password" class="form-control" id="re-pwd" name="re-password">
+
+                        {% if error == "re_password" %}
+
+                        <label for="re-pwd" class="form-label invalid"><h6>CONFIRM PASSWORD <i>- This field is mandatory</i></h6></label>
+                        <input type="password" class="form-control" id="re-pwd" name="re-password">
+
+                        {% elif error == "mismatch" %}
+
+                        <label for="re-pwd" class="form-label invalid"><h6>CONFIRM PASSWORD <i>- Passwords didn't match</i></h6></label>
+                        <input type="password" class="form-control" id="re-pwd" value="{{ re_password }}" name="re-password">
+
+                        {% else %}
+
+                            <label for="re-pwd" class="form-label"><h6>CONFIRM PASSWORD</h6></label>
+                            <input type="password" class="form-control" id="re-pwd" value="{{ re_password }}" name="re-password">
+
+                        {% endif %}
                     </div>
                     <input type="submit" value="SIGN UP" class="btn btn-primary submit">
                 </form>

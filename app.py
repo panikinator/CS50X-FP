@@ -46,7 +46,7 @@ def signup():
             return render_template("signup.html", error="nameAlreadyTaken", username=name, password=password, re_password=re_password)
 
         if password != re_password:
-            return render_template("signup.html", error="unmatch", username=name, password=password, re_password=re_password)
+            return render_template("signup.html", error="mismatch", username=name, password=password, re_password=re_password)
 
         db.execute("INSERT INTO users(username, hash) VALUES(:username, :hashed)", username = username, hashed = generate_password_hash(password))
         return redirect("/")
