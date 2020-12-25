@@ -6,6 +6,7 @@
     --background: #3d3d41;
     --page-background: #ffffff;
     --shadow: 0 1px 5px rgba(104, 104, 104, 0.8);
+    --invalid: red;
 }
 
 body {
@@ -20,10 +21,11 @@ img {
 
 .wrapper {
     display: grid;
+    grid-gap: 20px;
 }
 
 .header {
-    height: 50px;
+    height: 100px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -81,6 +83,18 @@ a {
 a:hover {
     text-decoration: none;
     color: var(--dark-button-hover);
+}
+
+.text-invalid {
+    color: var(--invalid);
+}
+
+.form-control.invalid {
+    border-color: var(--invalid);
+}
+
+.form-control.invalid:hover {
+    border-color: var(--invalid);
 }
 
 @media(max-width: 720px) {

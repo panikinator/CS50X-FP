@@ -18,12 +18,28 @@
                 <h5>Glad to see you again!</h5>
                 <form action="/login" method="POST">
                     <div class="mb-3">
+                        {% if error == "username" %}
+                        <label for="email" class="form-label"><h6 style="color: red;">USERNAME <i>- This field is mandatory</i></h6></label>
+                        <input type="text" class="form-control invalid" id="email" name="username">
+                        {% elif error == "invalid" %}
+                        <label for="email" class="form-label"><h6 style="color: red;">USERNAME <i>- Invalid username and/or password</i></h6></label>
+                        <input type="text" class="form-control invalid" id="email" value="{{ username }}" name="username">
+                        {% else %}
                         <label for="email" class="form-label"><h6>USERNAME</h6></label>
-                        <input type="text" class="form-control" id="email" name="username">
+                        <input type="text" class="form-control" value="{{ username }}" id="email" name="username">
+                        {% endif %}
                     </div>
                     <div class="mb-3">
-                      <label for="pwd" class="form-label"><h6>PASSWORD</h6></label>
-                      <input type="password" class="form-control" id="pwd" name="password">
+                        {% if error == "password" %}
+                        <label for="pwd" class="form-label"><h6 style="color: red;">PASSWORD <i>- This field is mandatory</i></h6></label>
+                        <input type="password" class="form-control invalid" id="pwd" name="password">
+                        {% elif error == "invalid" %}
+                        <label for="pwd" class="form-label"><h6 style="color: red;">PASSWORD <i>- Invalid username and/or password</i></h6></label>
+                        <input type="password" class="form-control invalid" id="pwd" value="{{ password }}" name="password">
+                        {% else %}
+                        <label for="pwd" class="form-label"><h6>PASSWORD</h6></label>
+                        <input type="password" class="form-control" id="pwd" value="{{ password }}" name="password">
+                        {% endif %}
                     </div>
                     <input type="submit" value="LOGIN" class="btn btn-primary submit">
                 </form>

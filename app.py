@@ -60,10 +60,10 @@ def login():
     if request.method == "POST":
         #checking for errors in fields
         if not request.form.get("username"):
-            return "must provide username" #dis one
+            return render_template("login.html", error="username", password=request.form.get("password"))
 
         elif not request.form.get("password"):
-            return "must provide password" #dis one
+            return render_template("login.html", error="password", username=request.form.get("username"))
 
         #querying the database for user info
         rows = db.execute("SELECT * FROM users WHERE username = :username",
@@ -71,7 +71,7 @@ def login():
 
         #checking if user exists and password is matching
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            return "invalid username and/or password" #dis one
+            return render_template("login.html", error="invalid", password=request.form.get("password"), username=request.form.get("username"))
 
         #setting the session's user id
         session["user_id"] = rows[0]["id"]
