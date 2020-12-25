@@ -7,6 +7,7 @@
     --page-background: #ffffff;
     --shadow: 0 1px 5px rgba(104, 104, 104, 0.8);
     --invalid: red;
+    --error-code: aqua;
 }
 
 body {
@@ -15,8 +16,13 @@ body {
     background: var(--page-background);
 }
 
-img {
+.header > img {
     max-width: 200px;
+}
+
+.cat {
+    margin-top: 2em;
+    width: 100%;
 }
 
 .wrapper {
@@ -33,6 +39,31 @@ img {
     justify-content: center;
     position: fixed;
     padding-right: 70px;
+}
+
+.head {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.error-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3em;
+    padding-top: 1em;
+}
+
+.error-info > h1 {
+    font-size: 10em;
+    color: var(--error-code);
+}
+
+.error-info > p, h3 {
+    align-self: flex-start;
+    color: var(--dark-text);
 }
 
 .non-fixed {
@@ -100,5 +131,13 @@ a:hover {
 @media(max-width: 720px) {
     .header {
         align-items: center;
+    }
+}
+
+@media(max-width: 900px) {
+    .head {
+        grid-template-columns: 1fr;
+        margin: 4em;
+        margin-top: 1em;
     }
 }

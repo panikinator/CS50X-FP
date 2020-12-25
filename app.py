@@ -3,6 +3,7 @@ from flask import Flask, render_template, session, redirect, request
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from helpers import login_required
 from cs50 import SQL
 
@@ -174,6 +175,17 @@ def classes(class_code):
 def logout():
     session.clear()
     return redirect("/login")
+
+def errorhandler(e):
+    """Handle error"""
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return render_template("error.html", name=e.name, code=e.code)
+
+
+# Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__": #checks if the code is executed directly or called as a module
     Flask.run(app)
