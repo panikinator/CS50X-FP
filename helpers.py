@@ -3,6 +3,8 @@ from functools import wraps
 import random
 import string
 
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -26,3 +28,19 @@ def create_code(database):
         if not len(rows) > 0:
             already_taken = False
     return code
+
+#checks if the class exists and the user is in the class or not and returns an error message if not in the class
+def only_for_joined(func):
+    @wraps(func)
+    def decorated_func(*args, **kwargs):
+        c = kwargs['class_code']
+        rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = c)
+        if len(rows_of_classes) < 1:
+            return "class does not exist"
+        isNotInClass = not(db.execute("SELECT * FROM students WHERE (class_id = :class_id AND student_id = :user_id)", class_id = rows_of_classes[0]['class_id'], user_id=session["user_id"]))
+        if isNotInClass:
+            return "you are not in the class"
+
+        return func(*args, **kwargs)
+    return decorated_func
+    

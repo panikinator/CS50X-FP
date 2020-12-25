@@ -3,13 +3,12 @@ from flask import Flask, render_template, session, redirect, request
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import generate_password_hash, check_password_hash
-from helpers import login_required
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from cs50 import SQL
-
-from helpers import login_required, create_code, makeRandomString
-
+import helpers
+from helpers import login_required, create_code, makeRandomString, only_for_joined
 db = SQL("sqlite:///database.db") #connecting to the sqlite3 database
-
+helpers.db = db
 
 #configuring the flask app
 app = Flask(__name__)
@@ -78,6 +77,7 @@ def login():
 
         #setting the session's user id
         session["user_id"] = rows[0]["id"]
+        session["username"] = rows[0]["username"]
         return redirect("/")
     
     #route if user requests the webpage via GET
@@ -108,8 +108,15 @@ def createClass():
         if not subject:
             return "Must provide subject"
 
+        classCode = create_code(db)
         # insert new row in classes table
-        db.execute("INSERT INTO classes(class_name, subject_name, teacher_id, code) VALUES(:className, :subject, :user_id, :code)", className=className, subject=subject, user_id=session["user_id"], code=create_code(db))
+        db.execute("INSERT INTO classes(class_name, subject_name, teacher_id, code) VALUES(:className, :subject, :user_id, :code)", className=className, subject=subject, user_id=session["user_id"], code=classCode)
+
+        rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = classCode)
+
+        # inserts the user into class
+        db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :class_id)", user_id=session["user_id"], class_id = rows_of_classes[0]['class_id'])
+
 
         return redirect("/")
 
@@ -154,18 +161,15 @@ def join():
     if request.method == "GET":
         return render_template("join.html")
 
+#route for viewing the homepage of the class
 @app.route("/class/<class_code>")
 @login_required
+@only_for_joined #this decorated function checks if the class exists and if the user is in the class
 def classes(class_code):
     rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)
-    if len(rows_of_classes) < 1:
-        return "class does not exist" #dis one
-    isNotInClass = not(db.execute("SELECT * FROM students WHERE (class_id = :class_id AND student_id = :user_id)", class_id = rows_of_classes[0]['class_id'], user_id=session["user_id"]))
-    if isNotInClass:
-        return "you are not in the class" #dis one
     
     students = db.execute("SELECT username FROM users JOIN students ON id = students.student_id WHERE class_id = :class_id",class_id = rows_of_classes[0]['class_id'])
-    print(students)
+    
     return render_template("viewclass.html", subjects = rows_of_classes[0]['subject_name'], users = students)
 
 
@@ -174,6 +178,18 @@ def classes(class_code):
 def logout():
     session.clear()
     return redirect("/login")
+
+def errorhandler(e):
+    """Handle error"""
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return e.name + " " + str(e.code)
+
+
+# Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)
+
 
 if __name__ == "__main__": #checks if the code is executed directly or called as a module
     Flask.run(app)
