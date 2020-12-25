@@ -9,6 +9,7 @@
 }
 
 body {
+    margin: 20px;
     line-height: 1.4;
     background: var(--page-background);
 }
@@ -29,7 +30,7 @@ img {
     align-items: start;
     justify-content: center;
     position: fixed;
-    padding-right: 150px;
+    padding-right: 70px;
 }
 
 .non-fixed {
