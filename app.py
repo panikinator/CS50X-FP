@@ -33,20 +33,23 @@ def signup():
 
         #checking for errors in form fields
         if not name:
-            return "Must proivde username" #dis one
+            return render_template("signup.html", error="username", password=password, re_password=re_password)
         if not password:
-            return "Must proivde password" #dis one
-        if password != re_password:
-            return "Passwords Don't match!" #dis one
+            return render_template("signup.html", error="password", username=name, re_password=re_password)
+        if not re_password:
+            return render_template("signup.html", error="re_password", username=name, password=password, re_password=re_password)
         
-        name = name.lower()
-        row = db.execute("SELECT * FROM users WHERE username = :username",username = name)
+        username = name.lower()
+        row = not db.execute("SELECT * FROM users WHERE username = :username",username = username)
 
         if not row:
-            db.execute("INSERT INTO users(username, hash) VALUES(:username, :hashed)", username = name, hashed = generate_password_hash(password))
-            return redirect("/")
-        else:
-            return "username already taken!" #dis one
+            return render_template("signup.html", error="nameAlreadyTaken", username=name, password=password, re_password=re_password)
+
+        if password != re_password:
+            return render_template("signup.html", error="unmatch", username=name, password=password, re_password=re_password)
+
+        db.execute("INSERT INTO users(username, hash) VALUES(:username, :hashed)", username = username, hashed = generate_password_hash(password))
+        return redirect("/")
     
     #route if user requests the webpage via GET
     else:

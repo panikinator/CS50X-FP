@@ -85,8 +85,6 @@ a:hover {
     color: var(--dark-button-hover);
 }
 
-.text-invalid {
-    color: var(--invalid);
 }
 
 .form-control.invalid {
