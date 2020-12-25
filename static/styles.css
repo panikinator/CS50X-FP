@@ -9,7 +9,6 @@
 }
 
 body {
-    margin: 30px 50px;
     line-height: 1.4;
     background: var(--page-background);
 }
@@ -20,18 +19,17 @@ img {
 
 .wrapper {
     display: grid;
-    grid-gap: 20px;
 }
 
 .header {
-    height: 100px;
+    height: 50px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: center;
     position: fixed;
-    padding-right: 100px;
+    padding-right: 150px;
 }
 
 .non-fixed {
@@ -84,7 +82,7 @@ a:hover {
     color: var(--dark-button-hover);
 }
 
-@media(max-width: 700px) {
+@media(max-width: 720px) {
     .header {
         align-items: center;
     }
