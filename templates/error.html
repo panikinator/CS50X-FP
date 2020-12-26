@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ name }}
+{% endblock %}
+
+{% block body %}
+
+<div class="head">
+    <div>
+        {% if code == 404 %}
+        <img class="cat" src="static/cute_cat_vector_290438.jpg" alt="Cat">
+
+        {% elif code == 500 %}
+        <img src="static\illustration-crash-vehicle-damage-auto_87946-939.jpg" alt="Car" class="cat">
+
+        {% else %}
+        <img src="static\depositphotos_2762167-stock-illustration-warning-sign.jpg" alt="Warning" class="Warning">
+
+        {% endif %}
+    </div>
+
+    <div class="error-info">
+        <h1>
+            {{ code }}
+        </h1>
+        <br>
+
+        {% if code == 404 %}
+        <h3>
+            Ah! What are you doing behind the curtains?
+        </h3>
+        <p>Looks like you are lost. Go to <a href="/">main page</a>.</p>
+
+        {% elif code == 500 %}
+        <h2>
+            INTERNAL SERVER ERROR
+        </h2>
+        <p>Seems like there's something wrong with our server. We are trying to fix that out. Try visiting this page later.</p>
+        {% else %}
+        <h2>OOPS! {{ name.upper() }}</h2>
+        <p>Looks like some error. Try going to <a href="/">main page</a>.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
