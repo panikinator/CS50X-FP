@@ -23,6 +23,13 @@ body {
 .cat {
     margin-top: 2em;
     width: 100%;
+    align-self: center;
+}
+
+.Warning {
+    align-self: center;
+    margin-top: 2em;
+    max-height: 500px;
 }
 
 .wrapper {
@@ -61,8 +68,8 @@ body {
     color: var(--error-code);
 }
 
-.error-info > p, h3 {
-    align-self: flex-start;
+.error-info > p, h3, h2 {
+    align-self: center;
     color: var(--dark-text);
 }
 
