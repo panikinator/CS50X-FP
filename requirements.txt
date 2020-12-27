@@ -2,3 +2,4 @@ flask
 flask_session
 werkzeug
 cs50
+flask-socketio

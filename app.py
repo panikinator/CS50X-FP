@@ -6,7 +6,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from cs50 import SQL
 import helpers
-from helpers import login_required, create_code, makeRandomString, only_for_joined
+from helpers import login_required, create_code, makeRandomString, only_for_joined, hasAccessToClass, get_current_time, is_logged_in 
+from flask_socketio import SocketIO, emit, join_room, leave_room
+import json
+
 db = SQL("sqlite:///database.db") #connecting to the sqlite3 database
 helpers.db = db
 
@@ -16,9 +19,10 @@ Session(app)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["SECRET_KEY"] = "QY1MTUM907BSX17NHZKRA3KFGM23QZ"
 Session(app)
 
-
+io = SocketIO(app)
 
 #TODO: change all the error messages (with #dis one) with something better maybe
 @app.route("/signup", methods=["GET", "POST"])
@@ -172,6 +176,64 @@ def classes(class_code):
     
     return render_template("viewclass.html", subjects = rows_of_classes[0]['subject_name'], users = students)
 
+@app.route("/class/<class_code>/chat")
+@login_required
+@only_for_joined
+def chat(class_code):
+    return render_template("chat.html")
+
+#on getting a message the room of the user is identified and then message data is sent to that room
+@io.on('message')
+def handle_message(data):
+    #getting the class code thorugh the URL
+
+    classCode =  str(request.headers['Referer']).split("/")[4]
+    message = data['text']
+    current_time = get_current_time()
+    print(current_time)
+
+    db.execute("INSERT INTO chats(of_class_code, sender_id, sender_name, message, time) VALUES(:classCode, :user_id, :username, :message, :time)", classCode=classCode, user_id = session.get('user_id'), username=session.get('username'), message=message, time=current_time)
+    io.emit('send-message', {'sender_name' : session.get('username'), 'message' : message, 'time' : current_time}, room=classCode)
+
+
+#on connection checks if the user has access to the class 
+#if user does not have access to class nothing is done
+#if user has access, user is joined to the room and a message is also sent to the class
+@io.on('connect')
+def connect():
+    classCode =  str(request.headers['Referer']).split("/")[4]
+    print(classCode)
+    if not hasAccessToClass(classCode):
+        return  
+
+    print("message sent")
+    join_room(classCode)
+    io.emit('send-message', {'sender_name' : session.get('username'), 'message' : session.get('username') + " has joined the chat", 'time' : get_current_time()}, room=classCode)
+
+@io.on('getMore')
+def getMore(data):
+    classCode =  str(request.headers['Referer']).split("/")[4]
+    i = data['listLength'] - 1
+    chats = db.execute("SELECT sender_name, message, time FROM chats WHERE of_class_code = :classCode ORDER BY chat_id DESC", classCode = classCode)
+    if len(chats) >= 20:
+        chatsToSend = chats[i:i+20]
+    else: 
+        chatsToSend = chats[i:]
+    specific_user = request.sid
+    join_room(specific_user)
+
+    print(json.dumps(chatsToSend))
+    io.emit("giveMore", json.dumps(chatsToSend))
+    
+
+
+
+@io.on('disconnect')
+def disconnect():
+    classCode =  str(request.headers['Referer']).split("/")[4]
+    leave_room(classCode)
+
+
 
 #clears the session to logout the user
 @app.route("/logout")
@@ -192,4 +254,4 @@ for code in default_exceptions:
 
 
 if __name__ == "__main__": #checks if the code is executed directly or called as a module
-    Flask.run(app)
+    io.run(app)
