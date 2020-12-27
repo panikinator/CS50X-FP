@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Chat
+{% endblock %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
+<style>
+   .list-group{
+    max-height: 500px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    overflow-y:auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.input-bottom {
+    position: fixed;
+    bottom: 2%;
+}
+#btn {
+    margin-right: 20px;
+}
+</style>
+{% endblock%}
+
+{% block body %}
+<div class="row">
+<div class="col-sm-12">
+    <div class="panel panel-primary" id="result_panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">Chats</h3>
+        </div>
+        <div class="panel-body">
+            <ul class="list-group" id="messages">
+            </ul>
+        </div>
+    </div>
+</div>
+</div>
+<div class="row">
+    <div class="col-sm-12 input-bottom">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Type Message Here" aria-label="Recipient's username" aria-describedby="btn" id="textBox">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" id="btn">Send</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(
+        function(){
+            var wait = false;
+            var url = window.location.href;
+            var classCode = url.split('/')[2]
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+            
+
+            $("#btn").on("click", function() {
+            socket.emit("message", { text: $("#textBox").val() });
+            $("#textBox").val("");
+            });
+
+            socket.on('send-message', function(data){
+                console.log(data['message']);
+                $("#messages").append(toListItem(data));
+                $('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 500);
+            });
+            
+            $(document).on("keyup", function(e) {
+                if(e.keyCode == 13) {
+                    $("#btn").click();
+                }
+            });
+
+            $('#messages').on('scroll', function() {
+                if(!wait){
+                var scrollTop = $(this).scrollTop();
+                if (scrollTop <= 0) {
+                    console.log("reached top")
+                    socket.emit('getMore', {listLength : $(this).length});
+                    wait = true;
+                }
+            }
+            });
+
+            socket.on('giveMore', function(dataNotjson) {
+                data = JSON.parse(dataNotjson);
+                for(let i = 0; i <= data.length; i++) {
+                    $("#messages").prepend(toListItem1(data[i]));
+                }
+                wait = false;
+                //console.log(data);
+            });
+
+            function toListItem(data) {
+                let LI = '<li class="list-group-item d-flex justify-content-between align-items-center">' +  '<span class="badge badge-secondary badge-pill">' + data['sender_name'] + '</span>' +  data['message'] + '<span class="badge badge-info badge-pill">' + data['time'] + '</span>' + '</li>';
+                return LI
+            }
+            function toListItem1(data) {
+                let LI = '<li class="list-group-item d-flex justify-content-between align-items-center">' +  '<span class="badge badge-secondary badge-pill">' + data.sender_name + '</span>' +  data.message + '<span class="badge badge-info badge-pill">' + data.time + '</span>' + '</li>';
+                return LI
+            }
+        }
+    );
+    
+</script>
+{% endblock %}
