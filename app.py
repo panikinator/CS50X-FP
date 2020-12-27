@@ -245,13 +245,12 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-    return e.name + " " + str(e.code)
+    return render_template("error.html", name=e.name, code=e.code)
 
 
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
-
 
 if __name__ == "__main__": #checks if the code is executed directly or called as a module
     io.run(app)
