@@ -4,6 +4,64 @@
    About
 {% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+  .button1 {
+    position: fixed;
+    left:10px;
+    top:30px;
+    }
+    .btn {
+    position: fixed;
+    background-color: DodgerBlue;
+    border: none;
+    color: white;
+     padding: 12px 30px;
+     right:10px;
+    top:30px;
+    font-size: 15px;
+    }
+      #canvas-container{
+        text-align: center;
+      }
+      .previous{
+        font-size: 50px;
+        position: fixed;
+        background-color: rgb(255, 165, 30);
+        border: none;
+        left:10px;
+        top:180px;
+
+      }
+      .next{
+        font-size: 50px;
+        background-color: rgb(255, 165, 30);
+        position: fixed;
+        border: none;
+        right:10px;
+        top:180px;
+      }
+      .page{
+        text-align: center;
+        font-size: 20px;
+      }
+      .zoom{
+        font-size:30px;
+        left:10px;
+        position: fixed;
+        background-color: rgb(255, 165, 30);
+        outline: none;
+      }
+      .zoom1{
+        font-size:30px;
+        left:60px;
+        position: fixed;
+        background-color: rgb(255, 165, 30);
+        outline: none;
+      }
+</style>
+{% endblock%}
 {% block body %}
 <div >
     <button class="button1"  onclick="start()" id="stop">open</button>
