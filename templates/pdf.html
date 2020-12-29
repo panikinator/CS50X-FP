@@ -1,0 +1,155 @@
+{% extends "layout.html" %}
+
+{% block title %}
+   About
+{% endblock %}
+
+{% block body %}
+<div >
+    <button class="button1"  onclick="start()" id="stop">open</button>
+    <a id="a"><button class="btn" onclick="download()"><i class="fa fa-download">DOWNLOAD</i></button></a>
+
+    <div id="insert"></div> 
+    <div class="page">  <span >
+      <span id="s1"></span><span id="pageno"></span><span id="s2"></span> <span id="total"></span>
+     </span></div>
+    <div id="canvas-container">
+  <canvas  id="pdf"> </canvas>
+    </div>
+  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+  <script>
+      var url = '1111.pdf';
+function start(){   
+
+document.getElementById('stop').parentNode.removeChild(document.getElementById('stop'));
+document.body.style.backgroundColor = '#333';
+
+var button = document.createElement("button");
+button.innerHTML = " &laquo;";
+button.className = "previous";
+ document.getElementById('insert').appendChild(button);
+
+ var button1 = document.createElement("button");
+button1.innerHTML = "&raquo;";
+button1.className = "next";
+ document.getElementById('insert').appendChild(button1);
+
+ var zoom = document.createElement("button");
+ zoom.innerHTML = "+";
+ zoom.className = "zoom";
+  document.getElementById('insert').appendChild(zoom);
+
+  var out = document.createElement("button");
+  out.innerHTML = "-";
+  out.className = "zoom1";
+  document.getElementById('insert').appendChild(out);
+
+document.getElementById('s1').innerHTML = "Page ";
+document.getElementById('s2').innerHTML = " of ";
+
+let pdfDoc = null;
+let number = 1;
+var pdfScale = 1;
+let pageNumIsPending = null;
+
+ var canvas = document.getElementById('pdf');
+  var ctx = canvas.getContext('2d');
+
+    function renderPage(n) {
+      var scale = pdfScale;
+      pdfDoc.getPage(n).then(function (page) {
+          var viewport = page.getViewport({scale });
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          var renderCtx = {
+            canvasContext: ctx,
+            viewport
+          };
+          page.render(renderCtx).promise.then(() => {
+            if (pageNumIsPending !== null) {
+              renderPage(pageNumIsPending);
+              pageNumIsPending = null;
+            }
+          });
+          document.querySelector('#pageno').textContent = n;
+        });
+    }
+
+    function previous() {
+      if (number <= 1) {
+        return;
+      }
+
+      else {
+        number--;
+        renderPage(number);
+      }
+    }
+
+    function Next() {
+      if (number >= pdfDoc.numPages) {
+        return;
+      }
+    else {  
+      number++;
+      renderPage(number);
+    }
+    }
+    function zoomin(){
+      pdfScale = pdfScale + 0.25;
+      renderPage(number);
+    }
+    function zoomout(){
+      if(pdfScale === 1){
+        return;
+      }
+      pdfScale = pdfScale - 0.25;
+      renderPage(number);
+    }
+    function checkkey(key){
+     if(key.keyCode === 39)
+      {
+        Next();
+      }
+      else if(key.keyCode === 37)
+      {
+        previous();
+      }
+      else if(key.keyCode === 107)
+      {
+        zoomin();
+      }
+      else if(key.keyCode === 109)
+      {
+        zoomout();
+      }
+      else if(key.keyCode === 79)
+      {
+        pdfScale = 1;
+        renderPage(number);
+
+      }
+    }
+    newFunction();
+    button.addEventListener("click",previous);
+    button1.addEventListener("click",Next);
+    zoom.addEventListener("click",zoomin);
+    out.addEventListener("click",zoomout);
+    window.addEventListener("keydown",checkkey);
+
+    function newFunction() {
+      pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+        pdfDoc = pdfDoc_;
+        document.querySelector('#total').textContent = pdfDoc.numPages;
+        renderPage(number);
+      });
+    }
+    }
+    function download(){
+      var a = document.getElementById('a');
+      a.href = url;
+      a.download = url;
+    }
+  </script>
+{% endblock %}
