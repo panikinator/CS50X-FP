@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<div class="list-group">
+    {% for i in files %}
+    <a href="view?link=%2Fclass%2F{{ class_code }}%2Ffiles%2F{{ i['file_id'] }}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ i['file_name'] }}</h5>
+          <small class="text-muted">{{ i['time'] }}</small>
+        </div>
+        <p class="mb-1">{{ i['comment'] }}</p>
+      </a>
+    {% endfor %}
+</div>
+
+{% endblock %}
