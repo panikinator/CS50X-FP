@@ -174,7 +174,7 @@ def classes(class_code):
     
     students = db.execute("SELECT username FROM users JOIN students ON id = students.student_id WHERE class_id = :class_id",class_id = rows_of_classes[0]['class_id'])
     
-    return render_template("viewclass.html", subjects = rows_of_classes[0]['subject_name'], users = students)
+    return render_template("viewclass.html", subject_name = rows_of_classes[0]['subject_name'], class_name = rows_of_classes[0]['class_name'], code = rows_of_classes[0]['code'], users = students)
 
 @app.route("/class/<class_code>/chat")
 @login_required

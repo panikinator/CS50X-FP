@@ -1,15 +1,27 @@
-{% extends "layout.html" %}
+{% extends "viewclass_layout.html" %}
 
-{% block title %}
-    Class {{subject}}
+{% block subtitle %}
+    About
 {% endblock %}
 
-{% block body %}
+{% block main %}
 
-<ul>
-    {% for user in users %}
-        <li>{{user['username']}}</li>
-    {% endfor %}
-</ul>
+<div class="justify-content-center">
+    <div class="row class-heading">
+        <span class="class-name">
+            {{ class_name }} ({{ subject_name }})
+        </span>
+        <div class="invite-code">
+            {{ code }}
+        </div>
+    </div>
+
+    
+    <ul class="list-group list-group-flush">
+        {% for user in users %}
+            <li class="list-group-item">{{user['username']}}</li>
+        {% endfor %}
+    </ul>
+</div>
 
 {% endblock %}

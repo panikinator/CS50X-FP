@@ -7,7 +7,7 @@
 {% block body %}
 <div class="wrapper">
     <div class="header">
-        <img src="/static/Temp_Logo.png" alt="Studinger Logo">
+        <img src="/static/logo.svg" alt="Studinger Logo">
     </div>
     <div class="header non-fixed">
     </div>
@@ -16,7 +16,7 @@
             <div class="col">
                 <h3>Welcome Back!</h3>
                 <h5>Glad to see you again!</h5>
-                <form action="/login" method="POST">
+                <form action="/login" autocomplete="off" method="POST">
                     <div class="mb-3">
                         {% if error == "username" %}
                         <label for="email" class="form-label invalid"><h6>USERNAME <i>- This field is mandatory</i></h6></label>

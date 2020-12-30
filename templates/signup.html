@@ -7,7 +7,7 @@
 {% block body %}
 <div class="wrapper">
     <div class="header">
-        <img src="/static/Temp_Logo.png" alt="Studinger Logo">
+        <img src="/static/logo.svg" alt="Studinger Logo">
     </div>
     <div class="header non-fixed">
     </div>
@@ -15,7 +15,7 @@
         <div class="row justify-content-md-center">
             <div class="col">
                 <h3>Create Account</h3>
-                <form action="/signup" method="POST">
+                <form action="/signup" autocomplete="off" method="POST">
                     <div class="mb-3">
 
                         {% if error == "username" %}

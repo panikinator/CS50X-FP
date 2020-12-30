@@ -10,10 +10,57 @@
     --error-code: aqua;
 }
 
-body {
-    margin: 20px;
-    line-height: 1.4;
-    background: var(--page-background);
+.class-heading {
+    padding: 1rem;
+    background: var(--dark-text);
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    margin-left: 20px;
+}
+
+.class-name {
+    font-size: 4rem;
+    color: var(--dark-button-hover);
+    align-self: flex-end;
+    margin-left: 2rem;
+}
+
+.invite-code {
+    background: var(--background);
+    padding: 0.5rem;
+    color: #ffffff;
+    border-radius: 5px;
+    border: #000000;
+    align-self: flex-end;
+    margin-right: 2rem;
+}
+
+.nav-link {
+    color: var(--dark-text);
+}
+
+.nav-link:hover {
+    color: #ffffff;
+}
+
+.navbar-toggler {
+    background: var(--dark-button);
+}
+
+.navbar-toggler:focus {
+    outline: none;
+}
+
+.navbar-toggler:hover {
+    opacity: 0.8;
+}
+
+.navbar.navbar-expand-md {
+    background: var(--background);
+    margin: 0%;
+    border-radius: 5px;
 }
 
 .header > img {
@@ -35,6 +82,7 @@ body {
 .wrapper {
     display: grid;
     grid-gap: 20px;
+    margin: 20px;
 }
 
 .header {
