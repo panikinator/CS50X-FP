@@ -1,6 +1,7 @@
 /* CSS Variables */
 :root {
     --dark-text: #858688;
+    --extra-dark-text: #333333;
     --dark-button: #436ee4;
     --dark-button-hover: #0e2ee0;
     --background: #3d3d41;
@@ -10,31 +11,77 @@
     --error-code: aqua;
 }
 
-.class-heading {
-    padding: 1rem;
-    background: var(--dark-text);
+.class-layout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    border-radius: 5px;
-    margin-left: 20px;
+    justify-content: center;
 }
 
 .class-name {
+    padding-left: 1em;
+}
+
+.class-name > h1 {
     font-size: 4rem;
-    color: var(--dark-button-hover);
-    align-self: flex-end;
-    margin-left: 2rem;
+    color: var(--dark-text);
+}
+
+.class-name > h2 {
+    font-size: 2rem;
+    color: var(--extra-dark-text);
+}
+
+.classCode-label {
+    color: var(--extra-dark-text);
+}
+
+.classCode-text {
+    border-radius: 3px 0 0 3px;
+    border: none;
+    color: #ffffff;
+    background: var(--background);
+    float: left;
+    width: auto;
+    padding: 0.5rem;
+}
+
+.classCode-button {
+    border-radius: 0 3px 3px 0;
+    border: none;
+    float: left;
+    color: white;
+    background: var(--dark-button);
+    padding: 0.5rem;
+    outline: none;
+}
+
+.list-heading {
+    font-size: 2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark-button);
+    margin-left: 1rem;
+}
+
+.classCode-button:hover {
+    background: var(--dark-button-hover);
+    border: none;
+    outline: none;
+}
+
+.classCode-button:focus {
+    border: none;
+    outline: none;
+    box-shadow: none !important;
+    background: green;
 }
 
 .invite-code {
-    background: var(--background);
-    padding: 0.5rem;
-    color: #ffffff;
-    border-radius: 5px;
-    border: #000000;
-    align-self: flex-end;
-    margin-right: 2rem;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    padding: 1rem;
 }
 
 .nav-link {
@@ -83,6 +130,7 @@
     display: grid;
     grid-gap: 20px;
     margin: 20px;
+    grid-template-columns: 1fr;
 }
 
 .header {
