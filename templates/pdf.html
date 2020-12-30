@@ -81,7 +81,7 @@
   </button>
   <div class="page">
   <span >
-    Page <span id="page-num"></span> of <span id="page-count"></span>
+    Page <span id="num"></span> of <span id="total"></span>
   </span></div>
 </div>
 <a id="a" ><button class="download" onclick="download()"><i class="fa fa-download"></i></button></a>
@@ -138,7 +138,7 @@
                     }
                 });
     
-                document.querySelector('#page-num').textContent = n;
+                document.getElementById('num').textContent = n;
             });
     }
     
@@ -195,23 +195,35 @@
          }
        }
     
-    newFunction();
-    document.getElementById('previous').addEventListener('click', previous);
-    document.getElementById('next').addEventListener('click', Next);
-    document.getElementById('zoom').addEventListener('click', zoomin);
-    document.getElementById('zoomout').addEventListener('click', zoomout);
-    window.addEventListener("keydown",checkkey);
-    function newFunction() {
-        pdfjsLib
-            .getDocument(url)
-            .promise.then(pdfDoc_ => {
-                pdfDoc = pdfDoc_;
+       pdfjsLib
+   .getDocument(url)
+   .promise.then(pdfDoc_ => {
+     pdfDoc = pdfDoc_;
+ 
+     document.getElementById('total').textContent = pdfDoc.numPages;
+ 
+     renderPage(number);
+   })
+   .catch(err => {
+    var para = document.getElementById('error');
+    para.innerHTML = "Ooops,This file can't be processed,instead  ";
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = url;
+    a.id = "link";
+    a.innerHTML = "DOWNLOAD FROM HERE";
+
+    para.appendChild(a);
     
-                document.querySelector('#page-count').textContent = pdfDoc.numPages;
-    
-                renderPage(number);
-            });
-    }
+    document.querySelector('#remove').style.display = 'none';
+  });
+ 
+ // Button Events
+ document.getElementById('previous').addEventListener('click', previous);
+ document.getElementById('next').addEventListener('click', Next);
+ document.getElementById('zoom').addEventListener('click', zoomin);
+ document.getElementById('zoomout').addEventListener('click', zoomout);
+ window.addEventListener("keydown",checkkey);
     
     </script>
 {% endblock %}
