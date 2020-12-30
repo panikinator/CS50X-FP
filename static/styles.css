@@ -11,6 +11,27 @@
     --error-code: aqua;
 }
 
+.col-xl-3 {
+    background: var(--background);
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.col-xl-3 > a > h1 {
+    color: white !important;
+    font-size: 3rem !important;
+}
+
+.col-xl-3 > a > h2 {
+    color: var(--dark-text) !important;
+    font-size: 1.5rem !important;
+}
+
+.col-xl-3:hover {
+    opacity: 0.9;
+}
+
 .class-layout {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -74,7 +95,6 @@
     border: none;
     outline: none;
     box-shadow: none !important;
-    background: green;
 }
 
 .invite-code {

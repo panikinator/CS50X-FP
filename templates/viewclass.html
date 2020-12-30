@@ -32,20 +32,22 @@
         {% endfor %}
     </ul>
 
-<script>
-function myFunction() {
-/* Get the text field */
-var copyText = document.getElementById("code");
-var button = document.getElementById('copy-button');
+    <script>
+    function myFunction() {
+    /* Get the text field */
+    var copyText = document.getElementById("code");
+    var button = document.getElementById('copy-button');
 
-/* Select the text field */
-copyText.select();
-copyText.setSelectionRange(0, 99999); /* For mobile devices */
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
 
-button.innerHTML = '<i class="fas fa-clipboard-check"></i>';
+    button.innerHTML = "<i class=\"fas fa-clipboard-check\"></i>";
+    button.style.background = "green";
 
-/* Copy the text inside the text field */
-document.execCommand("copy");
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+    }
 </script>
 
 {% endblock %}

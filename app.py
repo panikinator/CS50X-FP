@@ -82,7 +82,7 @@ def login():
         #setting the session's user id
         session["user_id"] = rows[0]["id"]
         session["username"] = rows[0]["username"]
-        return redirect("/")
+        return redirect("/home")
     
     #route if user requests the webpage via GET
     else:
@@ -92,6 +92,20 @@ def login():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/home")
+@login_required
+def home():
+    classes = db.execute("SELECT DISTINCT class_id FROM students WHERE student_id = :user_id", user_id = session['user_id'])
+    class_info = []
+
+    for class_ in classes:
+        information = db.execute("SELECT class_name, subject_name, code FROM classes WHERE class_id = :class_id", class_id = class_["class_id"])
+        class_info.append(information[0])
+
+    return render_template("homepage.html", classes = class_info)
+
 
 # route fo creating a new class
 @app.route("/createClass", methods=["GET", "POST"])
