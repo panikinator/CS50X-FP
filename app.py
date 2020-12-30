@@ -94,6 +94,7 @@ def index():
     return render_template("index.html")
 
 
+# user's home page where all the classes will be listed
 @app.route("/home")
 @login_required
 def home():
@@ -178,6 +179,21 @@ def join():
     # if user requests the form via get
     if request.method == "GET":
         return render_template("join.html")
+
+
+# route for leaving a class
+@app.route("/leaveClass/<class_code>")
+@login_required
+@only_for_joined
+def leaveClass(class_code):
+    # get the class_id from the classes table
+    class_id = db.execute("SELECT class_id FROM classes WHERE code = :class_code", class_code = class_code)
+
+    # remove the current user from the class
+    db.execute("DELETE FROM students WHERE student_id = :user_id AND class_id = :class_id", user_id = session['user_id'], class_id = class_id[0]['class_id'])
+
+    # redirect user to the home page
+    return redirect("/home")
 
 #route for viewing the homepage of the class
 @app.route("/class/<class_code>")
