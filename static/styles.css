@@ -235,6 +235,11 @@ a:hover {
     .header {
         align-items: center;
     }
+
+    .class-layout {
+        grid-template-columns: 1fr;
+        align-items: center;
+    }
 }
 
 @media(max-width: 900px) {
