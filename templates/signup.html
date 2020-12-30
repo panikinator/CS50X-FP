@@ -6,13 +6,15 @@
 
 {% block body %}
 <div class="wrapper">
-    <div class="header">
-        <img src="/static/logo.svg" alt="Studinger Logo">
-    </div>
     <div class="header non-fixed">
     </div>
+    <div class="header">
+        <a class="navbar-brand" href="/">
+            <img style="width: 200px;" src="/static/logo.svg" alt="Studinger Logo">
+        </a>
+    </div>
     <div class="container">
-        <div class="row justify-content-md-center">
+        <div class="row justify-content-center">
             <div class="col">
                 <h3>Create Account</h3>
                 <form action="/signup" autocomplete="off" method="POST">

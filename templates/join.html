@@ -5,19 +5,38 @@
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-sm-12">
-        <h1>Join Class</h1>
-        <br>
+<div class="wrapper">
+    <div class="header non-fixed">
     </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12 text-center">
-        <form action="/join" method="POST">
-            <input type="text" name="classCode" placeholder="Invite Code"><br>
-            <input type="submit" placeholder="Join">
-        </form>
+    <div class="header">
+        <a class="navbar-brand" href="/">
+            <img style="width: 200px;" src="/static/logo.svg" alt="Studinger Logo">
+        </a>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col">
+                <h3>Join Class</h3>
+                <form action="/join" autocomplete="off" method="POST">
+                    <div class="mb-3">
+                        {% if error == "empty" %}
+                        <label for="classCode" class="form-label invalid"><h6>INVITE CODE <i>- This field is mandatory</i></h6></label>
+                        <input type="text" class="form-control invalid" id="classCode" name="classCode">
+                        {% elif error == "does_not_exist" %}
+                        <label for="classCode" class="form-label invalid"><h6>INVITE CODE <i>- Invalid code</i></h6></label>
+                        <input type="text" class="form-control invalid" value="{{ classCode }}" id="classCode" name="classCode">
+                        {% elif error == "alreadyMember" %}
+                        <label for="classCode" class="form-label invalid"><h6>INVITE CODE <i>- You are already a member of this class</i></h6></label>
+                        <input type="text" class="form-control invalid" value="{{ classCode }}" id="classCode" name="classCode">
+                        {% else %}
+                        <label for="classCode" class="form-label"><h6>INVITE CODE</h6></label>
+                        <input type="text" class="form-control" id="classCode" name="classCode">
+                        {% endif %}
+                    </div>
+                    <input type="submit" value="JOIN" class="btn btn-primary submit">
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

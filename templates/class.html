@@ -5,19 +5,41 @@
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-sm-12">
-        <h1>Create New Class</h1>
+<div class="wrapper">
+    <div class="header non-fixed">
     </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12 text-center">
-        <form action="/createClass" method="POST">
-            <input type="text" name="className" placeholder="Class Name"><br>
-            <input type="text" name="subject" placeholder="Subject"><br>
-            <input type="submit">
-        </form>
+    <div class="header">
+        <a class="navbar-brand" href="/">
+            <img style="width: 200px;" src="/static/logo.svg" alt="Studinger Logo">
+        </a>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col">
+                <h3>Create Class</h3>
+                <form action="/createClass" autocomplete="off" method="POST">
+                    <div class="mb-3">
+                        {% if error == "className" %}
+                        <label for="class_name" class="form-label invalid"><h6>CLASS NAME <i>- This field is mandatory</i></h6></label>
+                        <input type="text" class="form-control invalid" id="class_name" name="className">
+                        {% else %}
+                        <label for="class_name" class="form-label"><h6>CLASS NAME</h6></label>
+                        <input type="text" class="form-control" value="{{ className }}" id="class_name" name="className">
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {% if error == "subject" %}
+                        <label for="subject" class="form-label invalid"><h6>SUBJECT <i>-This field is mandatory</i></h6></label>
+                        <input type="text" class="form-control invalid" id="subject" name="subject">
+                        {% else %}
+                        <label for="subject" class="form-label"><h6>SUBJECT</h6></label>
+                        <input type="text" class="form-control" value="{{ subject }}" id="subject" name="subject">
+                        {% endif %}
+                    </div>
+                    <input type="submit" value="CREATE" class="btn btn-primary submit">
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

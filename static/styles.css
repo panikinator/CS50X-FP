@@ -20,12 +20,14 @@
 
 .col-xl-3 > a > h1 {
     color: white !important;
-    font-size: 3rem !important;
+    font-size: 3rem;
+    object-fit: contain;
 }
 
 .col-xl-3 > a > h2 {
     color: var(--dark-text) !important;
-    font-size: 1.5rem !important;
+    font-size: 1.5rem;
+    object-fit: contain;
 }
 
 .col-xl-3:hover {
@@ -130,10 +132,6 @@
     border-radius: 5px;
 }
 
-.header > img {
-    max-width: 200px;
-}
-
 .cat {
     margin-top: 2em;
     width: 100%;
@@ -232,6 +230,10 @@
 
 .sign-up {
     color: var(--dark-text);
+}
+
+.header > a > img {
+    max-width: 200px;
 }
 
 a {

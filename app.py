@@ -121,10 +121,10 @@ def createClass():
 
         # check for missing values
         if not className:
-            return "Must provide classname"
+            return render_template("class.html", error="className", subject=subject)
 
         if not subject:
-            return "Must provide subject"
+            return render_template("class.html", error="subject", className=className)
 
         classCode = create_code(db)
         # insert new row in classes table
@@ -136,7 +136,7 @@ def createClass():
         db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :class_id)", user_id=session["user_id"], class_id = rows_of_classes[0]['class_id'])
 
 
-        return redirect("/")
+        return redirect("/class/"+classCode)
 
     # if user requests the form via get
     if request.method == "GET":
@@ -156,24 +156,24 @@ def join():
 
         # check for empty values
         if not classCode:
-            return "Must Provide Invite Code"
+            return render_template("join.html", error="empty")
 
         #checking if class exists or not
         rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = classCode)
         if len(rows_of_classes) < 1:
-            return "class does not exist" #dis one
+            return render_template("join.html", error="does_not_exist", classCode=classCode) #dis one
 
         # check if user is already a member of the given class
         alreadyMember = not(db.execute("SELECT * FROM students WHERE (class_id = :class_id AND student_id = :user_id)", class_id = rows_of_classes[0]['class_id'], user_id=session["user_id"]))
 
         if not alreadyMember:
-            return "You are already a member of this class"
+            return render_template("join.html", error="alreadyMember", classCode=classCode)
         
         # add user to the class
         db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :class_id)", user_id=session["user_id"], class_id = rows_of_classes[0]['class_id'])
 
         # redirect user to the main page
-        return redirect("/")
+        return redirect("/class/"+classCode)
 
     # if user requests the form via get
     if request.method == "GET":
