@@ -1,18 +1,14 @@
 {% extends "layout.html" %}
 
 {% block title %}
-   About
+   PDF viewer
 {% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
-  .button1 {
-    position: fixed;
-    left:10px;
-    top:30px;
-    }
-    .anujkabtn {
+
+   .download {
     position: fixed;
     background-color: DodgerBlue;
     border: none;
@@ -31,7 +27,8 @@
         background-color: rgb(255, 165, 30);
         border: none;
         left:10px;
-        top:180px;
+        top:200px;
+        width: 50px;
 
       }
       .next{
@@ -40,174 +37,181 @@
         position: fixed;
         border: none;
         right:10px;
-        top:180px;
+        top:200px;
+        width: 50px;
       }
       .page{
         text-align: center;
+        color: antiquewhite;
         font-size: 20px;
       }
       .zoom{
         font-size:30px;
-        left:10px;
         position: fixed;
         background-color: rgb(255, 165, 30);
         outline: none;
+        width: 52px;
+        left:10px;
+        top:260px;
       }
       .zoom1{
         font-size:30px;
-        left:60px;
         position: fixed;
         background-color: rgb(255, 165, 30);
         outline: none;
+        width: 51px;
+        right:10px;
+        top:260px;
       }
-</style>
+    </style>
 {% endblock%}
 {% block body %}
 <div >
-    <button class="button1"  onclick="start()" id="stop">open</button>
-    <a id="a"><button class="anujkabtn" onclick="download()"><i class="fa fa-download">DOWNLOAD</i></button></a>
-
-    <div id="insert"></div> 
-    <div class="page">  <span >
-      <span id="s1"></span><span id="pageno"></span><span id="s2"></span> <span id="total"></span>
-     </span></div>
-    <div id="canvas-container">
-  <canvas  id="pdf"> </canvas>
-    </div>
-  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
-  <script>
-      var url = '1111.pdf';
-function start(){   
-
-document.getElementById('stop').parentNode.removeChild(document.getElementById('stop'));
-document.body.style.backgroundColor = '#333';
-
-var button = document.createElement("button");
-button.innerHTML = " &laquo;";
-button.className = "previous";
- document.getElementById('insert').appendChild(button);
-
- var button1 = document.createElement("button");
-button1.innerHTML = "&raquo;";
-button1.className = "next";
- document.getElementById('insert').appendChild(button1);
-
- var zoom = document.createElement("button");
- zoom.innerHTML = "+";
- zoom.className = "zoom";
-  document.getElementById('insert').appendChild(zoom);
-
-  var out = document.createElement("button");
-  out.innerHTML = "-";
-  out.className = "zoom1";
-  document.getElementById('insert').appendChild(out);
-
-document.getElementById('s1').innerHTML = "Page ";
-document.getElementById('s2').innerHTML = " of ";
-
-let pdfDoc = null;
-let number = 1;
-var pdfScale = 1;
-let pageNumIsPending = null;
-
- var canvas = document.getElementById('pdf');
-  var ctx = canvas.getContext('2d');
-
-    function renderPage(n) {
-      var scale = pdfScale;
-      pdfDoc.getPage(n).then(function (page) {
-          var viewport = page.getViewport({scale });
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-
-          var renderCtx = {
-            canvasContext: ctx,
-            viewport
-          };
-          page.render(renderCtx).promise.then(() => {
-            if (pageNumIsPending !== null) {
-              renderPage(pageNumIsPending);
-              pageNumIsPending = null;
-            }
-          });
-          document.querySelector('#pageno').textContent = n;
-        });
+  <button class="previous" id="previous">
+    &laquo;
+  </button>
+  <button class="next" id="next">
+    &raquo;
+  </button>
+  <button class="zoom" id="zoom">
+    +
+  </button>
+  <button class="zoom1" id="zoomout">
+    -
+  </button>
+  <div class="page">
+  <span >
+    Page <span id="page-num"></span> of <span id="page-count"></span>
+  </span></div>
+</div>
+<a id="a" ><button class="download" onclick="download()"><i class="fa fa-download"></i></button></a>
+ 
+<div id="canvas-container">
+    <canvas  id="pdf"> </canvas>
+      </div>
+<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+<script>var url = '1111.pdf';
+    document.body.style.backgroundColor = '#333';
+    let pdfDoc = null;
+     var number = 1;
+     var pageNumIsPending = null;
+    
+     var a = document.getElementById('a');
+     a.href = url;
+     a.download =url;
+    
+    var  pdfscale = 1.5;
+     var canvas = document.getElementById('pdf')
+     var ctx = canvas.getContext('2d');
+    
+    
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      pdfscale = 0.61;
     }
-
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+    if(isTablet)  {
+      pdfscale = 0.7;
+    }
+    var scale2 = pdfscale;
+    
+    function renderPage(n) {
+    
+        var scale = pdfscale;
+        pdfDoc.getPage(n).then(function (page) {
+                // Set scale
+                const viewport = page.getViewport({ scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+    
+                const renderCtx = {
+                    canvasContext: ctx,
+                    viewport
+                };
+    
+                page.render(renderCtx).promise.then(() => {
+    
+                    if (pageNumIsPending !== null) {
+                        renderPage(pageNumIsPending);
+                        pageNumIsPending = null;
+                    }
+                });
+    
+                document.querySelector('#page-num').textContent = n;
+            });
+    }
+    
+    
     function previous() {
-      if (number <= 1) {
-        return;
-      }
-
-      else {
+        if (number <= 1) {
+            return;
+        }
         number--;
         renderPage(number);
-      }
     }
-
+    
     function Next() {
-      if (number >= pdfDoc.numPages) {
-        return;
-      }
-    else {  
-      number++;
-      renderPage(number);
-    }
+        if (number >= pdfDoc.numPages) {
+            return;
+        }
+        number++;
+        renderPage(number);
     }
     function zoomin(){
-      pdfScale = pdfScale + 0.25;
-      renderPage(number);
-    }
-    function zoomout(){
-      if(pdfScale === 1){
-        return;
-      }
-      pdfScale = pdfScale - 0.25;
-      renderPage(number);
-    }
-    function checkkey(key){
-     if(key.keyCode === 39)
-      {
-        Next();
-      }
-      else if(key.keyCode === 37)
-      {
-        previous();
-      }
-      else if(key.keyCode === 107)
-      {
-        zoomin();
-      }
-      else if(key.keyCode === 109)
-      {
-        zoomout();
-      }
-      else if(key.keyCode === 79)
-      {
-        pdfScale = 1;
+        pdfscale = pdfscale + 0.25;
         renderPage(number);
-
       }
-    }
+    
+      function zoomout(){
+        if(pdfscale <= scale2){
+          return;
+        }
+        pdfscale = pdfscale - 0.25;
+        renderPage(number);
+      }
+      function checkkey(key){
+        if(key.keyCode === 39)
+         {
+           Next();
+         }
+         else if(key.keyCode === 37)
+         {
+           previous();
+         }
+         else if(key.keyCode === 107)
+         {
+           zoomin();
+         }
+         else if(key.keyCode === 109)
+         {
+           zoomout();
+         }
+         else if(key.keyCode === 79)
+         {
+           pdfscale = 1.5;
+           renderPage(number);
+    
+         }
+       }
+    
     newFunction();
-    button.addEventListener("click",previous);
-    button1.addEventListener("click",Next);
-    zoom.addEventListener("click",zoomin);
-    out.addEventListener("click",zoomout);
+    document.getElementById('previous').addEventListener('click', previous);
+    document.getElementById('next').addEventListener('click', Next);
+    document.getElementById('zoom').addEventListener('click', zoomin);
+    document.getElementById('zoomout').addEventListener('click', zoomout);
     window.addEventListener("keydown",checkkey);
-
     function newFunction() {
-      pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
-        pdfDoc = pdfDoc_;
-        document.querySelector('#total').textContent = pdfDoc.numPages;
-        renderPage(number);
-      });
+        pdfjsLib
+            .getDocument(url)
+            .promise.then(pdfDoc_ => {
+                pdfDoc = pdfDoc_;
+    
+                document.querySelector('#page-count').textContent = pdfDoc.numPages;
+    
+                renderPage(number);
+            });
     }
-    }
-    function download(){
-      var a = document.getElementById('a');
-      a.href = url;
-      a.download = url;
-    }
-  </script>
+    
+    </script>
 {% endblock %}
