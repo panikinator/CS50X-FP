@@ -1,14 +1,16 @@
 #importing all the needed libraries here
-from flask import Flask, render_template, session, redirect, request
+from flask import Flask, render_template, session, redirect, request, send_file
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
+from werkzeug.utils import secure_filename
 from cs50 import SQL
 import helpers
-from helpers import login_required, create_code, makeRandomString, only_for_joined, hasAccessToClass, get_current_time, is_logged_in 
+from helpers import login_required, create_code, makeRandomString, only_for_joined, hasAccessToClass, get_current_time, isTeacherOfclass
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import json
+from io import BytesIO
 
 db = SQL("sqlite:///database.db") #connecting to the sqlite3 database
 helpers.db = db
@@ -176,6 +178,62 @@ def classes(class_code):
     
     return render_template("viewclass.html", subject_name = rows_of_classes[0]['subject_name'], class_name = rows_of_classes[0]['class_name'], code = rows_of_classes[0]['code'], users = students)
 
+#route to upload documents and stuff
+#this route will be restricted to the teacher of that class only
+@app.route("/class/<class_code>/upload", methods=["GET", "POST"])
+@login_required
+@only_for_joined
+def upload(class_code):
+    if request.method == "POST":
+        if not isTeacherOfclass(class_code):
+            return render_template("error.html", name = "restricted to teachers")
+        if "file" not in request.files:
+            return "please provide an appropritae file file"
+        File = request.files['file']
+        if not File.filename:
+            return "please provide an appropritae file file"
+        if not request.form.get("comment"):
+            comment = " "
+        else:
+            comment = request.form.get("comment")
+
+        
+        Filename = secure_filename(File.filename)
+        FileData = File.read()
+
+        db.execute("INSERT INTO files(file_name, time, comment, class_code, file_data) VALUES(:file_name, :time, :comment, :class_code, :file_data)",
+                    file_name = Filename, time = get_current_time(), comment = comment, file_data = FileData, class_code = class_code)
+
+        return redirect("/class/" + class_code)
+    else:
+        if not isTeacherOfclass(class_code):
+            return render_template("error.html", name = "restricted to teachers")
+        return render_template("upload.html")
+
+@app.route("/class/<class_code>/documents")
+@login_required
+@only_for_joined
+def documents(class_code):
+    list_of_files = db.execute("SELECT file_id, file_name, time, comment FROM files WHERE class_code = :class_code", class_code = class_code)
+    return render_template("documents.html", files = list_of_files, class_code = class_code)
+
+@app.route("/class/<class_code>/files/<file_id>")
+@login_required
+@only_for_joined
+def media(class_code, file_id):
+    
+    File = db.execute("SELECT file_name, file_data FROM files WHERE class_code = :class_code AND file_id = :file_id", class_code = class_code, file_id = file_id)[0]
+    if not File:
+        return "Not Found"
+    return send_file(BytesIO(File['file_data']), attachment_filename= File['file_name'])
+
+@app.route("/class/<class_code>/view")
+@login_required
+@only_for_joined
+def view(class_code):
+    link = request.args.get('link')
+    return render_template("pdf.html", link = link)
+
 @app.route("/class/<class_code>/chat")
 @login_required
 @only_for_joined
@@ -191,7 +249,6 @@ def handle_message(data):
     classCode =  str(request.headers['Referer']).split("/")[4]
     message = data['text']
     current_time = get_current_time()
-    print(current_time)
 
     last_chat_id = db.execute("INSERT INTO chats(of_class_code, sender_id, sender_name, message, time) VALUES(:classCode, :user_id, :username, :message, :time)", classCode=classCode, user_id = session.get('user_id'), username=session.get('username'), message=message, time=current_time)
     io.emit('send-message', {'sender_name' : session.get('username'), 'message' : message, 'time' : current_time, 'chat_id' : last_chat_id}, room=classCode)
@@ -216,10 +273,7 @@ def getMore(data):
     classCode =  str(request.headers['Referer']).split("/")[4]
     i = data['totalMessages'] 
     last_chat_id = data['lastID']
-    if data['firstTime']:
-        chats = db.execute("SELECT sender_name, message, time, chat_id FROM chats WHERE of_class_code = :classCode AND chat_id <= :last_id ORDER BY chat_id DESC", classCode = classCode, last_id = last_chat_id)
-    else:
-        chats = db.execute("SELECT sender_name, message, time, chat_id FROM chats WHERE of_class_code = :classCode AND chat_id < :last_id ORDER BY chat_id DESC", classCode = classCode, last_id = last_chat_id)
+    chats = db.execute("SELECT sender_name, message, time, chat_id FROM chats WHERE of_class_code = :classCode AND chat_id <= :last_id ORDER BY chat_id DESC", classCode = classCode, last_id = last_chat_id)
     if len(chats) >= 10:
         chatsToSend = chats[i:i+10]
     else: 
@@ -248,6 +302,7 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
+    print(e)
     return render_template("error.html", name=e.name, code=e.code)
 
 

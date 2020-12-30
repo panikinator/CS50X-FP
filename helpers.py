@@ -66,3 +66,6 @@ def hasAccessToClass(c):
 def get_current_time():
     current_time = datetime.datetime.now().strftime("%m-%d-%Y %H:%M:%S")
     return current_time
+
+def isTeacherOfclass(code):
+    return bool(db.execute("SELECT * FROM classes WHERE code = :code AND teacher_id = :user_id", code = code, user_id = session.get("user_id")))
