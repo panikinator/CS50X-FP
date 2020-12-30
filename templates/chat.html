@@ -29,6 +29,9 @@
 {% block main %}
 <div class="row">
 <div class="col-sm-12">
+    <button id="loadmore">Load More</button>
+</div>
+<div class="col-sm-12">
     <div class="panel panel-primary" id="result_panel">
         <div class="panel-heading">
             <h3 class="panel-title">Chats</h3>
@@ -57,8 +60,18 @@
         function(){
             var wait = false;
             var url = window.location.href;
-            var classCode = url.split('/')[2]
+            var classCode = url.split('/')[4]
             var socket = io.connect('http://' + document.domain + ':' + location.port);
+            var totalMessages = 0;
+            var lastMessageID = 0;
+
+            {% if theLast == None %}
+             var lastMessageID = 0;
+             {% else %}
+             lastMessageID = {{ theLast }};
+             {% endif %}
+
+            socket.emit('getMore', {totalMessages: totalMessages , lastID : lastMessageID, firstTime : 1})
             
 
             $("#btn").on("click", function() {
@@ -68,7 +81,9 @@
 
             socket.on('send-message', function(data){
                 console.log(data['message']);
-                $("#messages").append(toListItem(data));
+                $("#messages").append(newListItem(data));
+                totalMessages++;
+                lastMessageID = data['chat_id'];
                 $('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 500);
             });
             
@@ -78,32 +93,32 @@
                 }
             });
 
-            $('#messages').on('scroll', function() {
-                if(!wait){
-                var scrollTop = $(this).scrollTop();
-                if (scrollTop <= 0) {
-                    console.log("reached top")
-                    socket.emit('getMore', {listLength : $(this).length});
-                    wait = true;
-                }
-            }
+            $('#loadmore').on('click', function() {
+                    console.log("loading more");
+                    socket.emit('getMore', {totalMessages: totalMessages, lastID : lastMessageID, firstTime : 0});
             });
 
             socket.on('giveMore', function(dataNotjson) {
                 data = JSON.parse(dataNotjson);
-                for(let i = 0; i <= data.length; i++) {
-                    $("#messages").prepend(toListItem1(data[i]));
+                for(let i = 0; i < data.length; i++) {
+                    $("#messages").prepend(newListItem(data[i]));
+                    totalMessages++;
                 }
-                wait = false;
                 //console.log(data);
             });
 
-            function toListItem(data) {
-                let LI = '<li class="list-group-item d-flex justify-content-between align-items-center">' +  '<span class="badge badge-secondary badge-pill">' + data['sender_name'] + '</span>' +  data['message'] + '<span class="badge badge-info badge-pill">' + data['time'] + '</span>' + '</li>';
-                return LI
-            }
-            function toListItem1(data) {
-                let LI = '<li class="list-group-item d-flex justify-content-between align-items-center">' +  '<span class="badge badge-secondary badge-pill">' + data.sender_name + '</span>' +  data.message + '<span class="badge badge-info badge-pill">' + data.time + '</span>' + '</li>';
+            /* 
+            `<li class="list-group-item list-group-item-action flex-column align-items-start active"> <div class="d-flex w-100 justify-content-between"> <h5 class="mb-1">${data['sender_name']}</h5> <small>${data['time']}</small> </div> <p class="mb-1">${data['message']}</p> </li>`
+            */
+
+            socket.on('someone-connected', function(data) {
+                let LI = `<li class="list-group-item list-group-item-info" flex-column align-items-start"> <div class="d-flex w-100 justify-content-between"> <small>${data['time']}</small> </div> <p class="mb-1">${data['message']}</p> </li>`;
+                $("#messages").append(LI);
+                $('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 500);
+            });
+
+            function newListItem(data) {
+                let LI = `<li class="list-group-item flex-column align-items-start"> <div class="d-flex w-100 justify-content-between"> <h6 class="mb-1"><span class="badge badge-pill badge-dark">${data.sender_name}:</span></h6> <small>${data.time}</small> </div> <p class="mb-1">${data.message}</p> <small></small></li>`;
                 return LI
             }
         }

@@ -180,7 +180,8 @@ def classes(class_code):
 @login_required
 @only_for_joined
 def chat(class_code):
-    return render_template("chat.html")
+    last_chat_id = db.execute("SELECT MAX(chat_id) FROM chats WHERE of_class_code = :classCode", classCode = class_code)[0]['MAX(chat_id)']
+    return render_template("chat.html", theLast = last_chat_id)
 
 #on getting a message the room of the user is identified and then message data is sent to that room
 @io.on('message')
@@ -192,8 +193,8 @@ def handle_message(data):
     current_time = get_current_time()
     print(current_time)
 
-    db.execute("INSERT INTO chats(of_class_code, sender_id, sender_name, message, time) VALUES(:classCode, :user_id, :username, :message, :time)", classCode=classCode, user_id = session.get('user_id'), username=session.get('username'), message=message, time=current_time)
-    io.emit('send-message', {'sender_name' : session.get('username'), 'message' : message, 'time' : current_time}, room=classCode)
+    last_chat_id = db.execute("INSERT INTO chats(of_class_code, sender_id, sender_name, message, time) VALUES(:classCode, :user_id, :username, :message, :time)", classCode=classCode, user_id = session.get('user_id'), username=session.get('username'), message=message, time=current_time)
+    io.emit('send-message', {'sender_name' : session.get('username'), 'message' : message, 'time' : current_time, 'chat_id' : last_chat_id}, room=classCode)
 
 
 #on connection checks if the user has access to the class 
@@ -208,19 +209,21 @@ def connect():
 
     print("message sent")
     join_room(classCode)
-    io.emit('send-message', {'sender_name' : session.get('username'), 'message' : session.get('username') + " has joined the chat", 'time' : get_current_time()}, room=classCode)
+    io.emit('someone-connected', {'sender_name' : session.get('username'), 'message' : session.get('username') + " has joined the chat", 'time' : get_current_time()}, room=classCode)
 
 @io.on('getMore')
 def getMore(data):
     classCode =  str(request.headers['Referer']).split("/")[4]
-    i = data['listLength'] - 1
-    chats = db.execute("SELECT sender_name, message, time FROM chats WHERE of_class_code = :classCode ORDER BY chat_id DESC", classCode = classCode)
-    if len(chats) >= 20:
-        chatsToSend = chats[i:i+20]
+    i = data['totalMessages'] 
+    last_chat_id = data['lastID']
+    if data['firstTime']:
+        chats = db.execute("SELECT sender_name, message, time, chat_id FROM chats WHERE of_class_code = :classCode AND chat_id <= :last_id ORDER BY chat_id DESC", classCode = classCode, last_id = last_chat_id)
+    else:
+        chats = db.execute("SELECT sender_name, message, time, chat_id FROM chats WHERE of_class_code = :classCode AND chat_id < :last_id ORDER BY chat_id DESC", classCode = classCode, last_id = last_chat_id)
+    if len(chats) >= 10:
+        chatsToSend = chats[i:i+10]
     else: 
         chatsToSend = chats[i:]
-    specific_user = request.sid
-    join_room(specific_user)
 
     print(json.dumps(chatsToSend))
     io.emit("giveMore", json.dumps(chatsToSend))
