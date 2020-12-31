@@ -202,14 +202,14 @@ def leaveClass(class_code):
 @login_required
 @only_for_joined #this decorated function checks if the class exists and if the user is in the class
 def classes(class_code):
-    rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)
+    class_Data = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)[0]
     
-    students = db.execute("SELECT username FROM users JOIN students ON id = students.student_id WHERE class_id = :class_id",class_id = rows_of_classes[0]['class_id'])
+    students = db.execute("SELECT username FROM users JOIN students ON id = students.student_id WHERE class_id = :class_id",class_id = class_Data['class_id'])
 
-    teacher_id = db.execute("SELECT username FROM users WHERE id = :teacher_id", teacher_id = rows_of_classes[0]['teacher_id'])
+    teacher_id = db.execute("SELECT username FROM users WHERE id = :teacher_id", teacher_id = class_Data['teacher_id'])
     
     
-    return render_template("viewclass.html", subject_name = rows_of_classes[0]['subject_name'], class_name = rows_of_classes[0]['class_name'], code = rows_of_classes[0]['code'], users = students, teacher_id = teacher_id[0]['username'])
+    return render_template("viewclass.html", subject_name = class_Data['subject_name'], class_name = class_Data['class_name'], code = class_Data['code'], users = students, teacher_id = teacher_id[0]['username'], isTeacher = class_Data['teacher_id'] == session.get('user_id'))
 
 #route to upload documents and stuff
 #this route will be restricted to the teacher of that class only
@@ -241,14 +241,16 @@ def upload(class_code):
     else:
         if not isTeacherOfclass(class_code):
             return render_template("error.html", name = "restricted to teachers")
-        return render_template("upload.html")
+        class_Data = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)[0]
+        return render_template("upload.html", code = class_code, class_name = class_Data['class_name'], isTeacher = class_Data['teacher_id'] == session.get('user_id'))
 
 @app.route("/class/<class_code>/documents")
 @login_required
 @only_for_joined
 def documents(class_code):
+    class_Data = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)[0]
     list_of_files = db.execute("SELECT file_id, file_name, time, comment FROM files WHERE class_code = :class_code", class_code = class_code)
-    return render_template("documents.html", files = list_of_files, class_code = class_code)
+    return render_template("documents.html", files = list_of_files, code = class_code, class_name = class_Data['class_name'], isTeacher = class_Data['teacher_id'] == session.get('user_id'))
 
 @app.route("/class/<class_code>/files/<file_id>")
 @login_required
@@ -271,8 +273,9 @@ def view(class_code):
 @login_required
 @only_for_joined
 def chat(class_code):
+    class_Data = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)[0]
     last_chat_id = db.execute("SELECT MAX(chat_id) FROM chats WHERE of_class_code = :classCode", classCode = class_code)[0]['MAX(chat_id)']
-    return render_template("chat.html", theLast = last_chat_id)
+    return render_template("chat.html", theLast = last_chat_id, code = class_code, class_name = class_Data['class_name'], isTeacher = class_Data['teacher_id'] == session.get('user_id'))
 
 #on getting a message the room of the user is identified and then message data is sent to that room
 @io.on('message')

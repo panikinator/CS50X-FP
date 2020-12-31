@@ -1,7 +1,12 @@
-{% extends "layout.html" %}
+{% extends "viewclass_layout.html" %}
+
+{% block subtitle %}
+    Upload
+{% endblock %}
 
 
-{% block body %}
+
+{% block main %}
 <form method="POST" enctype = "multipart/form-data">
     <input type="file" name="file">
     <input type="text" name="comment">

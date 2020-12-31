@@ -18,6 +18,9 @@
                     <li class="nav-item"><a class="nav-link" href="/class/{{ code }}">{{ class_name }}</a></li>
                     <li class="nav-item"><a class="nav-link" href="/class/{{ code }}/chat">Chat</a></li>
                     <li class="nav-item"><a class="nav-link" href="/class/{{ code }}/documents">Documents</a></li>
+                    {% if isTeacher %}
+                    <li class="nav-item"><a class="nav-link" href="/class/{{ code }}/upload">Upload</a></li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav ml-auto mt-2">
                     <li class="nav-item"><a class="nav-link" href="/leaveClass/{{ code }}">Leave Class</a></li>
