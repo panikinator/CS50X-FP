@@ -94,7 +94,7 @@ def login():
 #The Main Index/About route
 @app.route("/")
 def index():
-    if not is_logged_in():
+    if session.get("user_id"):
         return redirect("/home")
     else:
         return render_template("index.html")
