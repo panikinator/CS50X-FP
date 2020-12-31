@@ -23,7 +23,7 @@ This Project is meant to help students and teachers as the students and teachers
 ![image](static/chat.png)
 ---
 * __It has it's own pdf viewer which is also compatible with portable devices and is made with pdf.js and you can also download the documents from there.__
-![image](static/pdf.png)
+![image](static/pdf1.png)
 ---
 * __You can create and join classes,the backend generates a unique joining code for each class created and stores the data associated with it in the sqlite database__
 ![image](static/classes.png)
