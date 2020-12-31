@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
 {% block title %}
-<!-- change variable accordingly -->
     {{ class_name }} | {% block subtitle %}{% endblock %}
 {% endblock %}
 
@@ -16,12 +15,12 @@
         <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto mt-2">
                     <!-- Change the routes appropriately -->
-                    <li class="nav-item"><a class="nav-link" href="/{{ classCode }}">{{ className }}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/{{ classCode }}/chat">Chat</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/{{ classCode }}/documents">Documents</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/class/{{ code }}">{{ class_name }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/class/{{ code }}/chat">Chat</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/class/{{ code }}/documents">Documents</a></li>
                 </ul>
                 <ul class="navbar-nav ml-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/leaveClass">Leave Class</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/leaveClass/{{ code }}">Leave Class</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                 </ul>
         </div>

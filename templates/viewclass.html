@@ -6,22 +6,48 @@
 
 {% block main %}
 
-<div class="justify-content-center">
-    <div class="row class-heading">
+<div class="class-layout">
         <span class="class-name">
-            {{ class_name }} ({{ subject_name }})
+            <h1>{{ class_name }}</h1>
+            <h2>{{ subject_name.upper() }}</h2>
         </span>
         <div class="invite-code">
-            {{ code }}
+            <label for="code" class="classCode-label">Invite Code</label>
+            <br>
+            <input disabled type="text" id="code" value="{{ code }}" class="classCode-text">
+            <button id="copy-button" onclick="myFunction();" title="Copy to Clipboard" class=".btn btn-primary classCode-button">
+                <i class="fas fa-clipboard-list"></i>
+            </button>
         </div>
-    </div>
-
+</div>
     
     <ul class="list-group list-group-flush">
+        <h1 class="list-heading">Members</h1>
         {% for user in users %}
-            <li class="list-group-item">{{user['username']}}</li>
+            <li class="list-group-item">{{user['username']}}
+                {% if user['username'] == teacher_id %}
+                 (Teacher)
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
-</div>
+
+    <script>
+    function myFunction() {
+    /* Get the text field */
+    var copyText = document.getElementById("code");
+    var button = document.getElementById('copy-button');
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+    button.innerHTML = "<i class=\"fas fa-clipboard-check\"></i>";
+    button.style.background = "green";
+
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+    }
+</script>
 
 {% endblock %}

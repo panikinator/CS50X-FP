@@ -84,7 +84,7 @@ def login():
         #setting the session's user id
         session["user_id"] = rows[0]["id"]
         session["username"] = rows[0]["username"]
-        return redirect("/")
+        return redirect("/home")
     
     #route if user requests the webpage via GET
     else:
@@ -94,6 +94,21 @@ def login():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+# user's home page where all the classes will be listed
+@app.route("/home")
+@login_required
+def home():
+    classes = db.execute("SELECT DISTINCT class_id FROM students WHERE student_id = :user_id", user_id = session['user_id'])
+    class_info = []
+
+    for class_ in classes:
+        information = db.execute("SELECT class_name, subject_name, code FROM classes WHERE class_id = :class_id", class_id = class_["class_id"])
+        class_info.append(information[0])
+
+    return render_template("homepage.html", classes = class_info)
+
 
 # route fo creating a new class
 @app.route("/createClass", methods=["GET", "POST"])
@@ -109,10 +124,10 @@ def createClass():
 
         # check for missing values
         if not className:
-            return "Must provide classname"
+            return render_template("class.html", error="className", subject=subject)
 
         if not subject:
-            return "Must provide subject"
+            return render_template("class.html", error="subject", className=className)
 
         classCode = create_code(db)
         # insert new row in classes table
@@ -124,7 +139,7 @@ def createClass():
         db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :class_id)", user_id=session["user_id"], class_id = rows_of_classes[0]['class_id'])
 
 
-        return redirect("/")
+        return redirect("/class/"+classCode)
 
     # if user requests the form via get
     if request.method == "GET":
@@ -144,28 +159,43 @@ def join():
 
         # check for empty values
         if not classCode:
-            return "Must Provide Invite Code"
+            return render_template("join.html", error="empty")
 
         #checking if class exists or not
         rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = classCode)
         if len(rows_of_classes) < 1:
-            return "class does not exist" #dis one
+            return render_template("join.html", error="does_not_exist", classCode=classCode) #dis one
 
         # check if user is already a member of the given class
         alreadyMember = not(db.execute("SELECT * FROM students WHERE (class_id = :class_id AND student_id = :user_id)", class_id = rows_of_classes[0]['class_id'], user_id=session["user_id"]))
 
         if not alreadyMember:
-            return "You are already a member of this class"
+            return render_template("join.html", error="alreadyMember", classCode=classCode)
         
         # add user to the class
         db.execute("INSERT INTO students(student_id, class_id) VALUES( :user_id, :class_id)", user_id=session["user_id"], class_id = rows_of_classes[0]['class_id'])
 
         # redirect user to the main page
-        return redirect("/")
+        return redirect("/class/"+classCode)
 
     # if user requests the form via get
     if request.method == "GET":
         return render_template("join.html")
+
+
+# route for leaving a class
+@app.route("/leaveClass/<class_code>")
+@login_required
+@only_for_joined
+def leaveClass(class_code):
+    # get the class_id from the classes table
+    class_id = db.execute("SELECT class_id FROM classes WHERE code = :class_code", class_code = class_code)
+
+    # remove the current user from the class
+    db.execute("DELETE FROM students WHERE student_id = :user_id AND class_id = :class_id", user_id = session['user_id'], class_id = class_id[0]['class_id'])
+
+    # redirect user to the home page
+    return redirect("/home")
 
 #route for viewing the homepage of the class
 @app.route("/class/<class_code>")
@@ -175,8 +205,11 @@ def classes(class_code):
     rows_of_classes = db.execute("SELECT * FROM classes WHERE code = :code", code = class_code)
     
     students = db.execute("SELECT username FROM users JOIN students ON id = students.student_id WHERE class_id = :class_id",class_id = rows_of_classes[0]['class_id'])
+
+    teacher_id = db.execute("SELECT username FROM users WHERE id = :teacher_id", teacher_id = rows_of_classes[0]['teacher_id'])
     
-    return render_template("viewclass.html", subject_name = rows_of_classes[0]['subject_name'], class_name = rows_of_classes[0]['class_name'], code = rows_of_classes[0]['code'], users = students)
+    
+    return render_template("viewclass.html", subject_name = rows_of_classes[0]['subject_name'], class_name = rows_of_classes[0]['class_name'], code = rows_of_classes[0]['code'], users = students, teacher_id = teacher_id[0]['username'])
 
 #route to upload documents and stuff
 #this route will be restricted to the teacher of that class only
