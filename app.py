@@ -26,7 +26,6 @@ Session(app)
 
 io = SocketIO(app)
 
-#TODO: change all the error messages (with #dis one) with something better maybe
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     #route if user POSTs a request to submit a form
@@ -53,7 +52,9 @@ def signup():
         if password != re_password:
             return render_template("signup.html", error="mismatch", username=name, password=password, re_password=re_password)
 
-        db.execute("INSERT INTO users(username, hash) VALUES(:username, :hashed)", username = username, hashed = generate_password_hash(password))
+        user_id = db.execute("INSERT INTO users(username, hash) VALUES(:username, :hashed)", username = username, hashed = generate_password_hash(password))
+        session["user_id"] = user_id
+        print(user_id)
         return redirect("/")
     
     #route if user requests the webpage via GET
@@ -300,11 +301,9 @@ def handle_message(data):
 @io.on('connect')
 def connect():
     classCode =  str(request.headers['Referer']).split("/")[4]
-    print(classCode)
     if not hasAccessToClass(classCode):
         return  
 
-    print("message sent")
     join_room(classCode)
     io.emit('someone-connected', {'sender_name' : session.get('username'), 'message' : session.get('username') + " has joined the chat", 'time' : get_current_time()}, room=classCode)
 
@@ -318,8 +317,6 @@ def getMore(data):
         chatsToSend = chats[i:i+10]
     else: 
         chatsToSend = chats[i:]
-
-    print(json.dumps(chatsToSend))
     io.emit("giveMore", json.dumps(chatsToSend))
     
 
@@ -342,7 +339,6 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-    print(e)
     return render_template("error.html", name=e.name, code=e.code)
 
 

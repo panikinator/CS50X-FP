@@ -11,6 +11,10 @@
     --error-code: aqua;
 }
 
+body {
+    background: linear-gradient(110deg, #fdcd3b 60%, #ffed4b 60%);
+}
+
 .col-12.col-md-6.col-sm-10.homepage-info {
     max-width: auto !important;
     background: white !important;
