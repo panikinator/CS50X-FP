@@ -12,7 +12,7 @@ This Project is meant to help students and teachers as the students and teachers
 
 
 <!--logo of our web application -->
-![Markdown Logo](static/logo.svg)
+![Markdown Logo](https://github.com/saksham3939/CS50X-FP/blob/main/static/logo.svg?raw=true)
 
 ---
 <!--features -->
@@ -35,13 +35,13 @@ ___
 ### HOW TO USE ?
 
 * Step1: Sign up<br>
-![image](static/signu.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/signu.png?raw=true)
 * Step2: Login<br>
-![image](static/login.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/login.png?raw=true)
 * Step3: Create or Join class<br>
-![image](static/class.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/class.png?raw=true)
 * Step4: Get notes and start discussing with your teachers or classmates. <br>
-![image](static/notes.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/notes.png?raw=true)
 
 ---
 
