@@ -225,10 +225,10 @@ def upload(class_code):
         if not isTeacherOfclass(class_code):
             return render_template("error.html", name = "restricted to teachers")
         if "file" not in request.files:
-            return "please provide an appropritae file file"
+            return render_template("upload.html", error = True)
         File = request.files['file']
         if not File.filename:
-            return "please provide an appropritae file file"
+            return render_template("upload.html", error = True)
         if not request.form.get("comment"):
             comment = " "
         else:

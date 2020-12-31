@@ -13,8 +13,13 @@
             <h3>Upload Document</h3>
             <form action="/class/{{ code }}/upload" enctype="multipart/form-data" autocomplete="off" method="POST">
                 <div class="mb-3">
+                    {% if error %}
+                    <label for="fileinput" class="form-label invalid"><h6>SELECT FILE <i>- Invalid file</i></h6></label>
+                    <input type="file" class="form-control invalid" id="fileinput" name="file">
+                    {% else %}
                     <label for="fileinput" class="form-label"><h6>SELECT FILE</h6></label>
                     <input type="file" class="form-control" id="fileinput" name="file">
+                    {% endif %}
                 </div>
                 <div class="mb-3">
                     <label for="comment" class="form-label"><h6>Comment</h6></label>
