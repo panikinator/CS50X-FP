@@ -54,6 +54,7 @@ def signup():
 
         user_id = db.execute("INSERT INTO users(username, hash) VALUES(:username, :hashed)", username = username, hashed = generate_password_hash(password))
         session["user_id"] = user_id
+        session["username"] = username
         print(user_id)
         return redirect("/")
     
