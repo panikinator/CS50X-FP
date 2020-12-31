@@ -13,12 +13,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def is_logged_in():
-    if session.get("user_id") is None:
-        return False
-    else:
-        True
-
 def makeRandomString(l):
     random_string = ''.join(random.choices(string.ascii_uppercase +
                              string.digits, k = l))
