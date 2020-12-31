@@ -15,7 +15,7 @@
             <label for="code" class="classCode-label">Invite Code</label>
             <br>
             <input disabled type="text" id="code" value="{{ code }}" class="classCode-text">
-            <button id="copy-button" onclick="myFunction();" title="Copy to Clipboard" class=".btn btn-primary classCode-button">
+            <button id="copy-button" title="Copy to Clipboard" class=".btn btn-primary classCode-button">
                 <i class="fas fa-clipboard-list"></i>
             </button>
         </div>
@@ -33,21 +33,24 @@
     </ul>
 
     <script>
-    function myFunction() {
-    /* Get the text field */
-    var copyText = document.getElementById('code');
-    var button = document.getElementById('copy-button');
+    $(document).ready(function() {
+        function CopyText(textToCopy)
+        {
+        let txtAr = document.createElement('textarea');
+        txtAr.value = textToCopy;
+        document.body.appendChild(txtAr);
+        txtAr.select();
+        document.execCommand('copy');
+        document.body.removeChild(txtAr);
+        }
 
-    /* Select the text field */
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); /* For mobile devices */
-
-    /* Copy the text inside the text field */
-    document.execCommand("copy");
-
-    button.innerHTML = "<i class=\"fas fa-clipboard-check\"></i>";
-    button.style.background = "green";
-    }
+        $("#copy-button").on('click', function() {
+            let textToCopy = $("#code").val();
+            CopyText(textToCopy);
+            $(this).html("<i class=\"fas fa-clipboard-check\"></i>");
+            $(this).css("background-color", "green");
+        });
+    });
 </script>
 
 {% endblock %}
