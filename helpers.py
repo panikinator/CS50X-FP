@@ -15,9 +15,9 @@ def login_required(f):
 
 def is_logged_in():
     if session.get("user_id") is None:
-        return True
+        return False
     else:
-        False
+        True
 
 def makeRandomString(l):
     random_string = ''.join(random.choices(string.ascii_uppercase +

@@ -7,7 +7,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from werkzeug.utils import secure_filename
 from cs50 import SQL
 import helpers
-from helpers import login_required, create_code, makeRandomString, only_for_joined, hasAccessToClass, get_current_time, isTeacherOfclass
+from helpers import login_required, create_code, makeRandomString, only_for_joined, hasAccessToClass, get_current_time, isTeacherOfclass, is_logged_in
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import json
 from io import BytesIO
@@ -91,9 +91,13 @@ def login():
         return render_template("login.html")
 
 
+#The Main Index/About route
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if not is_logged_in():
+        return redirect("/home")
+    else:
+        return render_template("index.html")
 
 
 # user's home page where all the classes will be listed
