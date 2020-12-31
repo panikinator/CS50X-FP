@@ -11,6 +11,10 @@
     --error-code: aqua;
 }
 
+.nav-bar-logo {
+    width: 200px;
+}
+
 .col-xl-3 {
     background: var(--background);
     padding: 1rem;
@@ -261,6 +265,10 @@ a:hover {
     .class-layout {
         grid-template-columns: 1fr;
         align-items: center;
+    }
+
+    .nav-bar-logo {
+        width: 150px !important;
     }
 }
 
