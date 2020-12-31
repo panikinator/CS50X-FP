@@ -12,10 +12,9 @@
         <div class="col">
             <h3>Upload Document</h3>
             <form action="/class/{{ code }}/upload" enctype="multipart/form-data" autocomplete="off" method="POST">
-                <div class="mb-3">
-                    <input type="file" class="form-control" id="fileinput" name="file">
-                    <label for="fileinput" class="form-label"><h6>SELECT FILE</h6></label>
-                    
+                <div class="custom-file mb-3">
+                    <input type="file" class="custom-file-input" id="fileinput" name="file">
+                    <label class="custom-file-label" for="fileinput" id="fileLabel">Choose file</label>
                 </div>
                 <div class="mb-3">
                     <label for="comment" class="form-label"><h6>Comment</h6></label>
@@ -25,6 +24,14 @@
             </form>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            $("#fileinput").on("change", function() {
+                let file_name = $(this).val().split("\\");
+                $("#fileLabel").html(file_name[file_name.length - 1]);
+            });
+        });
+    </script>
 </div>
 
 {% endblock %}
