@@ -7,7 +7,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from werkzeug.utils import secure_filename
 from cs50 import SQL
 import helpers
-from helpers import login_required, create_code, makeRandomString, only_for_joined, hasAccessToClass, get_current_time, isTeacherOfclass, is_logged_in
+from helpers import login_required, create_code, makeRandomString, only_for_joined, hasAccessToClass, get_current_time, isTeacherOfclass
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import json
 from io import BytesIO
