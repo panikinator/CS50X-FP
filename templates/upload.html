@@ -12,13 +12,14 @@
         <div class="col">
             <h3>Upload Document</h3>
             <form action="/class/{{ code }}/upload" enctype="multipart/form-data" autocomplete="off" method="POST">
-                <div class="mb-3">
+                <div class="custom-file mb-3">
+                
                     {% if error %}
-                    <label for="fileinput" class="form-label invalid"><h6>SELECT FILE <i>- Invalid file</i></h6></label>
-                    <input type="file" class="form-control invalid" id="fileinput" name="file">
+                    <input type="file" class="custom-file-input invalid" id="fileinput" name="file">
+                    <label class="custom-file-label invalid" for="fileinput" id="fileLabel"><h6>SELECT FILE <i>- Invalid file</i></h6></label>
                     {% else %}
-                    <label for="fileinput" class="form-label"><h6>SELECT FILE</h6></label>
-                    <input type="file" class="form-control" id="fileinput" name="file">
+                    <input type="file" class="custom-file-input" id="fileinput" name="file">
+                    <label class="custom-file-label" for="fileinput" id="fileLabel">Choose file</label>
                     {% endif %}
                 </div>
                 <div class="mb-3">
@@ -29,6 +30,14 @@
             </form>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            $("#fileinput").on("change", function() {
+                let file_name = $(this).val().split("\\");
+                $("#fileLabel").html(file_name[file_name.length - 1]);
+            });
+        });
+    </script>
 </div>
 
 {% endblock %}
