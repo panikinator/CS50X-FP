@@ -4,13 +4,26 @@
     Upload
 {% endblock %}
 
-
-
 {% block main %}
-<form method="POST" enctype = "multipart/form-data">
-    <input type="file" name="file">
-    <input type="text" name="comment">
-    <input type="submit" value="Upload">
-</form>
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col">
+            <h3>Upload Document</h3>
+            <form action="/class/{{ code }}/upload" enctype="multipart/form-data" autocomplete="off" method="POST">
+                <div class="mb-3">
+                    <label for="fileinput" class="form-label"><h6>SELECT FILE</h6></label>
+                    <input type="file" class="form-control" id="fileinput" name="file">
+                </div>
+                <div class="mb-3">
+                    <label for="comment" class="form-label"><h6>Comment</h6></label>
+                    <input type="text" class="form-control" id="comment" name="comment">
+                </div>
+                <input type="submit" value="UPLOAD" class="btn btn-primary submit">
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
