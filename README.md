@@ -19,13 +19,13 @@ This Project is meant to help students and teachers as the students and teachers
 ### FEATURES
 ---
 
-* __Allow students and techers to communicate through chat. Using socketIO, a Real Time Communication is established and the messages are also logged into the sqlite database for providing a history of the chats.__
+* __Allows students and techers to communicate through chat. Using socketIO, a Real Time Communication is established and the messages are also logged into a sqlite database for providing a history of the chats.__
 ![image](static/chat.png)
 ---
 * __It has it's own pdf viewer which is also compatible with portable devices and is made with pdf.js and you can also download the documents from there.__
 ![image](static/pdf.png)
 ---
-* __You can create and join classes,the backend generates an unique joining code for each class created and stores the data associated with it in the sqlite database__
+* __You can create and join classes,the backend generates a unique joining code for each class created and stores the data associated with it in the sqlite database__
 ![image](static/classes.png)
 ---
 * __The teacher of the class can upload notes with a comment which can be accessed by the students. The files are stored as a BLOBs in the Sqlite database__
