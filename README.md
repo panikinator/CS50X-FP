@@ -54,7 +54,7 @@ link - https://github.com/saksham3939/CS50X-FP
 ### CREDITS
 ---
 <!--Name of the contributors-->
-|Name       |Github Userame    |
+|Name       |Github Username    |
 |---------- |------         |
 |Anuj Gautam|Anuj17185      |
 |Priyanshu  |PRIYANSHU160904|
