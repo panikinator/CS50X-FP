@@ -20,16 +20,16 @@ This Project is meant to help students and teachers as the students and teachers
 ---
 
 * __Allows students and techers to communicate through chat. Using socketIO, a Real Time Communication is established and the messages are also logged into a sqlite database for providing a history of the chats.__
-![image](static/chat.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/chat.png?raw=true)
 ---
 * __It has it's own pdf viewer which is also compatible with portable devices and is made with pdf.js and you can also download the documents from there.__
-![image](static/pdf1.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/pdf1.png?raw=true)
 ---
 * __You can create and join classes,the backend generates a unique joining code for each class created and stores the data associated with it in the sqlite database__
-![image](static/classes.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/classes.png?raw=true)
 ---
 * __The teacher of the class can upload notes with a comment which can be accessed by the students. The files are stored as a BLOBs in the Sqlite database__
-![image](static/upload.png)
+![image](https://github.com/saksham3939/CS50X-FP/blob/main/static/upload.png?raw=true)
 ___
 
 ### HOW TO USE ?
