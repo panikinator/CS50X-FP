@@ -44,7 +44,7 @@ def signup():
         if not re_password:
             return render_template("signup.html", error="re_password", username=name, password=password, re_password=re_password)
         
-        username = name.lower()
+        username = name
         row = not db.execute("SELECT * FROM users WHERE username = :username",username = username)
 
         if not row:
