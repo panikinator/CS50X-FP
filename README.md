@@ -45,11 +45,10 @@ ___
 
 ---
 
-### HOW TO ACCESS THE PROJECT ?
+### ACCESS TO THE DEMO HOSTED PROJECT ?
 ----
 
-<!--github Link of the project-->
-link - https://github.com/saksham3939/CS50X-FP
+link - [https://studinger.glitch.me/](https://studinger.glitch.me/)
 
 ### CREDITS
 ---
